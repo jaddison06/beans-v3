@@ -4,40 +4,45 @@ import os.path as path
 from shared_library_extension import *
 
 def generate_makefile_item(target: str, dependencies: list[str], commands: list[str]) -> str:
-    out = f"{target}:"
-    for dependency in dependencies: out += f" {dependency}"
-    for command in commands: out += f"\n	{command}"
-    out += "\n\n"
+    out = f'{target}:'
+    for dependency in dependencies: out += f' {dependency}'
+    for command in commands: out += f'\n	{command}'
+    out += '\n\n'
     return out
 
+UTIL = f'{get_config(ConfigField.python)} codegen/fs_util.py'
+def rm_file(fname: str) -> str: return f'{UTIL} rm_file {fname}'
+def rm_dir(dirname: str) -> str: return f'{UTIL} rm_dir {dirname}'
+def mkdir(dirname: str) -> str: return f'{UTIL} mkdir {dirname}'
+
 def codegen(files: list[ParsedGenFile]) -> str:
-    out = ""
+    out = ''
 
     libs: list[str] = []
     for file in files:
         if not file.has_code(): continue
 
-        lib_path = f"build{path.sep}{file.libpath_no_ext()}"
-        lib_name = f"{lib_path}{shared_library_extension()}"
+        lib_path = f'build/{file.libpath_no_ext()}'
+        lib_name = f'{lib_path}{shared_library_extension()}'
 
         link_libs: list[str] = []
 
         for annotation in file.annotations:
-            if annotation.name == "LinkWithLib":
+            if annotation.name == 'LinkWithLib':
                 link_libs.append(annotation.args[0])
 
-        command = f"gcc -shared -o {lib_name} -fPIC -I. {file.name_no_ext()}.c"
+        command = f'{get_config(ConfigField.gcc)} -shared -o {lib_name} -fPIC -I. {file.name_no_ext()}.c'
         for lib in link_libs:
-            command += f" -l{lib}"
+            command += f' -l{lib}'
 
         # todo: #included dependencies
         out += generate_makefile_item(
             lib_name,
             [
-                f"{file.name_no_ext()}.c"
+                f'{file.name_no_ext()}.c'
             ],
             [
-                f"mkdir -p {path.dirname(lib_name)}",
+                mkdir(path.dirname(lib_name)),
                 command
             ]
         )
@@ -46,57 +51,57 @@ def codegen(files: list[ParsedGenFile]) -> str:
     
     
     # there's a directory called codegen, so we have to use .PHONY to
-    # tell make to use the rule called "codegen" instead of the directory
-    out = ".PHONY: codegen\n\n" \
+    # tell make to use the rule called 'codegen' instead of the directory
+    out = '.PHONY: codegen\n\n' \
       + generate_makefile_item(
-        "all",
-        ["codegen", "libraries"], # codegen MUST be before libraries because the C files might need to include c_codegen.h
+        'all',
+        ['codegen', 'libraries'], # codegen MUST be before libraries because the C files might need to include c_codegen.h
         []
     ) + generate_makefile_item(
-        "libraries",
+        'libraries',
         libs,
         []
     ) + generate_makefile_item(
-        "codegen",
+        'codegen',
         [],
         [
-            f"python codegen{path.sep}main.py"
+            f'{get_config(ConfigField.python)} codegen/main.py'
         ]
     ) + generate_makefile_item(
-        "run",
+        'run',
         [
-            "all"
+            'all'
         ],
         [
-            "dart run"
-            #"dart run --enable-vm-service"
+            'dart run'
+            #'dart run --enable-vm-service'
         ]
     ) + generate_makefile_item(
-        "clean",
+        'clean',
         [],
         [
-            "rm -rf build",
-            f"rm -f {get_config(ConfigField.c_output_path)}",
-            f"rm -f {get_config(ConfigField.dart_output_path)}",
-            f"rm -f {get_config(ConfigField.cloc_exclude_list_path)}"
+            rm_dir('build'),
+            rm_file(get_config(ConfigField.c_output_path)),
+            rm_file(get_config(ConfigField.dart_output_path)),
+            rm_file(get_config(ConfigField.cloc_exclude_list_path))
         ]
     ) + (
         ''.join([generate_makefile_item(
             # The `cloc` command-line utility MUST be installed, or this won't work.
             # https://github.com/AlDanial/cloc
-            "cloc",
+            'cloc',
             [],
             [
                 # exclude generated files so cloc actually shows real results
-                f"cloc . --exclude-list={get_config(ConfigField.cloc_exclude_list_path)}"
+                f'{get_config(ConfigField.cloc)} . --exclude-list={get_config(ConfigField.cloc_exclude_list_path)}'
             ]
         ) + generate_makefile_item(
-            "cloc-by-file",
+            'cloc-by-file',
             [],
             [
-                f"cloc . --exclude-list={get_config(ConfigField.cloc_exclude_list_path)} --by-file"
+                f'{get_config(ConfigField.cloc)} . --exclude-list={get_config(ConfigField.cloc_exclude_list_path)} --by-file'
             ]
-        )]) if get_config(ConfigField.use_cloc) else ""
+        )]) if get_config(ConfigField.use_cloc) == 'True' else ''
     ) + out
 
     return out

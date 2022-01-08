@@ -2,23 +2,27 @@
 
 all: codegen libraries
 
-libraries:
+libraries: build/native\3rdparty\libe131/libe131.dll
 
 codegen:
-	python codegen\main.py
+	python codegen/main.py
 
 run: all
 	dart run
 
 clean:
-	rm -rf build
-	rm -f native/c_codegen.h
-	rm -f bin/dart_codegen.dart
-	rm -f .cloc_exclude_list.txt
+	python codegen/fs_util.py rm_dir build
+	python codegen/fs_util.py rm_file native/c_codegen.h
+	python codegen/fs_util.py rm_file bin/dart_codegen.dart
+	python codegen/fs_util.py rm_file .cloc_exclude_list.txt
 
 cloc:
-	cloc . --exclude-list=.cloc_exclude_list.txt
+	C:/Users/jjadd/Downloads/cloc-1.92.exe . --exclude-list=.cloc_exclude_list.txt
 
 cloc-by-file:
-	cloc . --exclude-list=.cloc_exclude_list.txt --by-file
+	C:/Users/jjadd/Downloads/cloc-1.92.exe . --exclude-list=.cloc_exclude_list.txt --by-file
+
+build/native\3rdparty\libe131/libe131.dll: native\3rdparty\libe131\e131.c
+	python codegen/fs_util.py mkdir build/native\3rdparty\libe131
+	gcc -shared -o build/native\3rdparty\libe131/libe131.dll -fPIC -I. native\3rdparty\libe131\e131.c -lws2_32
 

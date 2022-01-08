@@ -11,14 +11,20 @@ class ConfigField(Enum):
     c_output_path = auto()
     use_cloc = auto()
     cloc_exclude_list_path = auto()
+    python = auto()
+    gcc = auto()
+    cloc = auto()
 
 DEFAULTS = {
-    ConfigField.definition_ext: ".gen",
-    ConfigField.definition_search_path: "native",
-    ConfigField.dart_output_path: "bin/dart_codegen.dart",
-    ConfigField.c_output_path: "native/c_codegen.h",
+    ConfigField.definition_ext: '.gen',
+    ConfigField.definition_search_path: 'native',
+    ConfigField.dart_output_path: 'bin/dart_codegen.dart',
+    ConfigField.c_output_path: 'native/c_codegen.h',
     ConfigField.use_cloc: True,
-    ConfigField.cloc_exclude_list_path: ".cloc_exclude_list.txt",
+    ConfigField.cloc_exclude_list_path: '.cloc_exclude_list.txt',
+    ConfigField.python: 'python',
+    ConfigField.gcc: 'gcc',
+    ConfigField.cloc: 'cloc'
 }
 
 CONFIG_FNAME = 'codegen.yaml'

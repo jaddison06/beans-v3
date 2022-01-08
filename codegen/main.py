@@ -31,15 +31,15 @@ def main():
             Parser(gen_file).parse()
         )
     
-    with open(get_config(ConfigField.dart_output_path), "wt") as fh:
+    with open(get_config(ConfigField.dart_output_path), 'wt') as fh:
         fh.write(dart    .codegen(parsed_files))
-    with open(get_config(ConfigField.c_output_path),    "wt") as fh:
+    with open(get_config(ConfigField.c_output_path),    'wt') as fh:
         fh.write(c       .codegen(parsed_files))
-    with open("Makefile",                               "wt") as fh:
+    with open('Makefile',                               'wt') as fh:
         fh.write(makefile.codegen(parsed_files))
     
-    if (get_config(ConfigField.use_cloc) == "True"):
-        with open(get_config(ConfigField.cloc_exclude_list_path), "wt") as fh:
+    if (get_config(ConfigField.use_cloc) == 'True'):
+        with open(get_config(ConfigField.cloc_exclude_list_path), 'wt') as fh:
             fh.write(cloc_exclude_list.codegen())
 
     

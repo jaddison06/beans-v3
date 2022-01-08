@@ -15,7 +15,7 @@ class Parser:
 
     def parse(self) -> ParsedGenFile:
         contents: list[str]
-        with open(self.fname, "rt") as fh:
+        with open(self.fname, 'rt') as fh:
             contents = fh.readlines()
         
         out = ParsedGenFile(
@@ -30,7 +30,7 @@ class Parser:
                 skip -= 1
                 continue
 
-            if line.startswith("//"):
+            if line.startswith('//'):
                 continue
 
             if line.isspace():
@@ -42,7 +42,7 @@ class Parser:
                 continue
             
             
-            if line.startswith("enum"):
+            if line.startswith('enum'):
                 enum = self.get_part(contents, i)
                 out.enums.append(
                     self.parse_enum(
@@ -53,7 +53,7 @@ class Parser:
                 annotations = []
                 skip = len(enum) - 1
 
-            elif line.startswith("class"):
+            elif line.startswith('class'):
                 class_ = self.get_part(contents, i)
                 out.classes.append(
                     self.parse_class(
@@ -64,7 +64,7 @@ class Parser:
                 annotations = []
                 skip = len(class_) - 1
 
-            elif line.startswith("@"):
+            elif line.startswith('@'):
                 annotations.append(
                     self.parse_annotation(line)
                 )
@@ -78,39 +78,39 @@ class Parser:
                 )
         
         annotation_warnings = out.validate_all_annotations()
-        if annotation_warnings != "":
+        if annotation_warnings != '':
             self.warn(annotation_warnings)
         
         return out
     
 
-    # get lines between i and "}"
+    # get lines between i and '}'
     def get_part(self, contents: list[str], i: int):
         try:
-            close_bracket_idx = contents[i:].index("}\n")
+            close_bracket_idx = contents[i:].index('}\n')
         except ValueError:
             # could be one at the end of the file with no newline after
             try:
                 close_bracket_idx = contents[i:].index('}')
             except ValueError:
-                self.error("Closing bracket not found", contents[i], '{')
+                self.error('Closing bracket not found', contents[i], '{')
                 
         return contents[i:
             i + close_bracket_idx + 1
         ]
     
 
-    # "class SomeClass {\n" => "SomeClass"
+    # 'class SomeClass {\n' => 'SomeClass'
     def get_structure_name(self, structure_type: str, structure_decl: str) -> str:
         return structure_decl[len(structure_type) + 1:][:-2].strip()
     
-    # decl should be something like "int *varName"
+    # decl should be something like 'int *varName'
     def to_codegen_type(self, decl: str) -> tuple[CodegenType, str]:
-        is_pointer = "*" in decl
+        is_pointer = '*' in decl
         if is_pointer:
-            typename, name = strip_all(decl.split("*"))
+            typename, name = strip_all(decl.split('*'))
         else:
-            typename, name = decl.split(" ")
+            typename, name = decl.split(' ')
 
         return CodegenType(
             typename,
@@ -124,7 +124,7 @@ class Parser:
     # if this is passed dodgy arguments then things will get v messy
     def warn(self, msg: str, line: str = '', error: str = '', prefix: str = 'Warning'):
         print(f'In file: {self.fname}')
-        print(colored(f"{prefix}: {msg}", 'red'))
+        print(colored(f'{prefix}: {msg}', 'red'))
         if line != '':
             line = line.strip()
             if error != '':
@@ -166,11 +166,11 @@ class Parser:
         if not annotation.endswith(')\n'):
             self.error('Annotations must end with parentheses, even if they have no arguments', annotation)
 
-        name, args_raw = annotation[1:].split("(")
+        name, args_raw = annotation[1:].split('(')
         args: list[str] = []
-        if not args_raw == ")\n":
+        if not args_raw == ')\n':
             args = strip_all(
-                args_raw[:-2].split(",")
+                args_raw[:-2].split(',')
             )
         return CodegenAnnotation(
             name,
@@ -181,13 +181,13 @@ class Parser:
     def parse_function(self, function: str, annotations: list[CodegenAnnotation]) -> CodegenFunction:
         function = self.normalize(function, True)
 
-        name_and_return_type, params_raw = function.split("(")
+        name_and_return_type, params_raw = function.split('(')
 
         return_type, name = self.to_codegen_type(name_and_return_type)
         
         params: dict[str, CodegenType] = {}
-        if not params_raw == ")\n":
-            for param in params_raw[:-2].split(","):
+        if not params_raw == ')\n':
+            for param in params_raw[:-2].split(','):
                 param_type, param_name = self.to_codegen_type(param.strip())
                 params[param_name] = param_type
         
@@ -199,7 +199,7 @@ class Parser:
         )
 
     def parse_enum(self, enum: list[str], annotations: list[CodegenAnnotation]) -> CodegenEnum:
-        name = self.get_structure_name("enum", enum[0])
+        name = self.get_structure_name('enum', enum[0])
         contents = enum[1:-1]
         out = CodegenEnum(name, [], annotations)
 
@@ -217,8 +217,8 @@ class Parser:
             
             if '//' in line:
                 val_name, stringify = strip_all(line.split('//'))
-                if "," in val_name:
-                    val_name = val_name[:val_name.find(",")]
+                if ',' in val_name:
+                    val_name = val_name[:val_name.find(',')]
             elif ',' in line:
                 val_name = stringify = line[:line.find(',')]
             else:
@@ -234,7 +234,7 @@ class Parser:
         return out
 
     def parse_class(self, class_: list[str], annotations: list[CodegenAnnotation]) -> CodegenClass:
-        name = self.get_structure_name("class", class_[0])
+        name = self.get_structure_name('class', class_[0])
         contents = class_[1:-1]
 
         out = CodegenClass(name, [], [], annotations)
@@ -253,8 +253,8 @@ class Parser:
             if line == '':
                 if len(current_annotations) > 0:
                     self.error(
-                        f"Whitespace after annotations in a class - what do these annotations apply to?\n{current_annotations}\n" + 
-                        "To apply annotations to the whole class, place them directly before the class definition."
+                        f'Whitespace after annotations in a class - what do these annotations apply to?\n{current_annotations}\n' + 
+                        'To apply annotations to the whole class, place them directly before the class definition.'
                     )
                 continue
                 
@@ -272,27 +272,17 @@ class Parser:
                 # method
                 method = self.parse_function(line, current_annotations)
                 for param in method.params:
-                    if param == "struct_ptr":
+                    if param == 'struct_ptr':
                         self.error("Class methods cannot have a parameter named 'struct_ptr'.", line, 'struct_ptr')
-                if not has_annotation(current_annotations, "Initializer"):
+                if not has_annotation(current_annotations, 'Initializer'):
                     # fuckery to put struct_ptr at the _start_ of method.params
-                    method.params = {"struct_ptr": CodegenType(typename = "void", is_pointer = True), **method.params}
+                    method.params = {'struct_ptr': CodegenType(typename = 'void', is_pointer = True), **method.params}
                 out.methods.append(
                     method
                 )
                 current_annotations = []
             else:
                 self.error("Class fields aren't supported yet, what the fuck do you think i am, a miracle worker?", line)
-                field_type, field_name = self.to_codegen_type(line[:-1])
-                # it's a field. probably.
-                out.fields.append(
-                    CodegenDataStructureField(
-                        field_name,
-                        field_type,
-                        current_annotations
-                    )
-                )
-                current_annotations = []
         
         # all that bollocks
         err_msg = out.validate()
