@@ -1,3 +1,27 @@
 @LinkWithLib(ws2_32)
 
-void E131_test()
+enum BeansE131ErrorCode {
+    success
+    socket       // e131_socket() failed
+    source_name  // Source name was too long
+    unicast_dest // e131_unicast_dest() failed
+}
+
+class BeansE131 {
+    @Initializer()
+    void* BeansE131Init(char* source_name, char* dest, u16 universe)
+
+    // todo: free some memory at some point. probably.
+
+    @Getter(error)
+    BeansE131ErrorCode BeansE131GetError()
+
+    @Show(Print)
+    void BeansE131Print()
+
+    @Show(SetValue)
+    void BeansE131SetValue(u16 channel, u8 value)
+
+    @Show(Send)
+    bool BeansE131Send()
+}

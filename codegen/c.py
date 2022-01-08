@@ -17,7 +17,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
 #define C_CODEGEN_H
 
 // old-style booleans to ensure Dart compatibility
-typedef int BOOL;
+typedef char BEANS_BOOL;
 #define TRUE 1
 #define FALSE 0
 
