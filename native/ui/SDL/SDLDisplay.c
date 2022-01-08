@@ -10,24 +10,24 @@ typedef struct
     SDLInitErrorCode errorCode;
 } SDLDisplay;
 
-SDLInitErrorCode SDGetErrorCode(SDLDisplay* display)
+SDLInitErrorCode SDGetErrorCode(SDLDisplay* self)
 {
-    return display->errorCode;
+    return self->errorCode;
 }
 
-SDLDisplay* LogSDLError(SDLDisplay* display, SDLInitErrorCode errorCode)
+SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode)
 {
     printf("SDL error: %s\n", SDL_GetError());
-    if (display->window != NULL)
-        SDL_DestroyWindow(display->window);
+    if (self->window != NULL)
+        SDL_DestroyWindow(self->window);
 
-    if (display->renderer != NULL)
-        SDL_DestroyRenderer(display->renderer);
+    if (self->renderer != NULL)
+        SDL_DestroyRenderer(self->renderer);
     
     SDL_Quit();
 
-    display->errorCode = errorCode;
-    return display;
+    self->errorCode = errorCode;
+    return self;
 }
 
 SDLDisplay* SDInit(const char* title)
@@ -49,56 +49,58 @@ SDLDisplay* SDInit(const char* title)
     return out;
 }
 
-void SDDestroy(SDLDisplay* display)
+void SDDestroy(SDLDisplay* self)
 {
-    SDL_DestroyRenderer(display->renderer);
-    SDL_DestroyWindow(display->window);
+    SDL_DestroyRenderer(self->renderer);
+    SDL_DestroyWindow(self->window);
     SDL_Quit();
-    free(display);
+    free(self);
 }
 
-void SDSetColour(SDLDisplay* display, int r, int g, int b)
+void SDSetColour(SDLDisplay* self, int r, int g, int b, int a)
 {
-    SDL_SetRenderDrawColor(display->renderer, r, g, b, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(self->renderer, r, g, b, a);
 }
 
-void SDGetSize(SDLDisplay* display, int* w, int* h)
-{
+void SDGetSize(SDLDisplay* self, int* w, int* h)
+{/*
     SDL_DisplayMode dm;
     SDL_GetDesktopDisplayMode(0, &dm);
     *w = dm.w;
     *h = dm.h;
+*/
+    SDL_GetWindowSize(self->window, w, h);
 }
 
-void SDFlush(SDLDisplay* display)
+void SDFlush(SDLDisplay* self)
 {
-    SDL_RenderPresent(display->renderer);
-    SDSetColour(display, 0, 0, 0);
-    SDL_RenderClear(display->renderer);
+    SDL_RenderPresent(self->renderer);
+    SDSetColour(self, 0, 0, 0, 255);
+    SDL_RenderClear(self->renderer);
 }
 
-void SDDrawPoint(SDLDisplay* display, int x, int y, int r, int g, int b)
+void SDDrawPoint(SDLDisplay* self, int x, int y, int r, int g, int b, int a)
 {
-    SDSetColour(display, r, g, b);
-    SDL_RenderDrawPoint(display->renderer, x, y);
+    SDSetColour(self, r, g, b, a);
+    SDL_RenderDrawPoint(self->renderer, x, y);
 }
 
-void SDDrawLine(SDLDisplay* display, int x1, int y1, int x2, int y2, int r, int g, int b)
+void SDDrawLine(SDLDisplay* self, int x1, int y1, int x2, int y2, int r, int g, int b, int a)
 {
-    SDSetColour(display, r, g, b);
-    SDL_RenderDrawLine(display->renderer, x1, y1, x2, y2);
+    SDSetColour(self, r, g, b, a);
+    SDL_RenderDrawLine(self->renderer, x1, y1, x2, y2);
 }
 
-void SDDrawRect(SDLDisplay* display, int x, int y, int w, int h, int r, int g, int b)
-{
-    SDL_Rect rect = {x, y, w, h};
-    SDSetColour(display, r, g, b);
-    SDL_RenderDrawRect(display->renderer, &rect);
-}
-
-void SDFillRect(SDLDisplay* display, int x, int y, int w, int h, int r, int g, int b)
+void SDDrawRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a)
 {
     SDL_Rect rect = {x, y, w, h};
-    SDSetColour(display, r, g, b);
-    SDL_RenderFillRect(display->renderer, &rect);
+    SDSetColour(self, r, g, b, a);
+    SDL_RenderDrawRect(self->renderer, &rect);
+}
+
+void SDFillRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a)
+{
+    SDL_Rect rect = {x, y, w, h};
+    SDSetColour(self, r, g, b, a);
+    SDL_RenderFillRect(self->renderer, &rect);
 }

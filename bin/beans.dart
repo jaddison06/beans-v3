@@ -1,9 +1,11 @@
 import 'dart_codegen.dart';
 import 'ui/V2.dart';
+import 'ui/Colour.dart';
+import 'ui/SDLDisplay.dart';
 import 'ui/SDLEvent.dart';
 
 Future<void> main(List<String> arguments) async {
-  final disp = SDLDisplayRaw('beans');
+  final disp = SDLDisplay('beans');
   final event = SDLEvent();
   var rect = V2(10, 10);
   var quit = false;
@@ -17,7 +19,7 @@ Future<void> main(List<String> arguments) async {
         quit = true;
       }
     }
-    disp.FillRect(rect.x, rect.y, 80, 50, 255, 0, 0);
+    disp.FillRect(rect, V2(80, 50), Colour.red);
     disp.Flush();
   }
 

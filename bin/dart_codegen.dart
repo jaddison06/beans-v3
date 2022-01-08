@@ -471,21 +471,21 @@ typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDGetSize_sig = void Function(
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_native_sig = Void Function(Pointer<Void>);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_sig = void Function(Pointer<Void>);
 
-// void SDDrawPoint(void* struct_ptr, int x, int y, int r, int g, int b)
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32);
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_sig = void Function(Pointer<Void>, int, int, int, int, int);
+// void SDDrawPoint(void* struct_ptr, int x, int y, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_sig = void Function(Pointer<Void>, int, int, int, int, int, int);
 
-// void SDDrawLine(void* struct_ptr, int x1, int y1, int x2, int y2, int r, int g, int b)
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int);
+// void SDDrawLine(void* struct_ptr, int x1, int y1, int x2, int y2, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int, int);
 
-// void SDDrawRect(void* struct_ptr, int x, int y, int w, int h, int r, int g, int b)
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int);
+// void SDDrawRect(void* struct_ptr, int x, int y, int w, int h, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int, int);
 
-// void SDFillRect(void* struct_ptr, int x, int y, int w, int h, int r, int g, int b)
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int);
+// void SDFillRect(void* struct_ptr, int x, int y, int w, int h, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int, int);
 
 // ----------CLASS IMPLEMENTATIONS----------
 
@@ -570,24 +570,24 @@ class SDLDisplayRaw {
         return _SDFlush!(structPointer);
     }
 
-    void DrawPoint(int x, int y, int r, int g, int b) {
-        _validatePointer('SDDrawPoint');
-        return _SDDrawPoint!(structPointer, x, y, r, g, b);
+    void cDrawPoint(int x, int y, int r, int g, int b, int a) {
+        _validatePointer('cDrawPoint');
+        return _SDDrawPoint!(structPointer, x, y, r, g, b, a);
     }
 
-    void DrawLine(int x1, int y1, int x2, int y2, int r, int g, int b) {
-        _validatePointer('SDDrawLine');
-        return _SDDrawLine!(structPointer, x1, y1, x2, y2, r, g, b);
+    void cDrawLine(int x1, int y1, int x2, int y2, int r, int g, int b, int a) {
+        _validatePointer('cDrawLine');
+        return _SDDrawLine!(structPointer, x1, y1, x2, y2, r, g, b, a);
     }
 
-    void DrawRect(int x, int y, int w, int h, int r, int g, int b) {
-        _validatePointer('SDDrawRect');
-        return _SDDrawRect!(structPointer, x, y, w, h, r, g, b);
+    void cDrawRect(int x, int y, int w, int h, int r, int g, int b, int a) {
+        _validatePointer('cDrawRect');
+        return _SDDrawRect!(structPointer, x, y, w, h, r, g, b, a);
     }
 
-    void FillRect(int x, int y, int w, int h, int r, int g, int b) {
-        _validatePointer('SDFillRect');
-        return _SDFillRect!(structPointer, x, y, w, h, r, g, b);
+    void cFillRect(int x, int y, int w, int h, int r, int g, int b, int a) {
+        _validatePointer('cFillRect');
+        return _SDFillRect!(structPointer, x, y, w, h, r, g, b, a);
     }
 
 }
