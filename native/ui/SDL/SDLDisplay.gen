@@ -1,0 +1,29 @@
+@LinkWithLib(SDL2)
+
+enum SDLInitErrorCode {
+    Success // Success
+    InitVideo_Fail // SDL_InitVideo() failed
+    CreateWindow_Fail // SDL_CreateWindow() failed
+    CreateRenderer_Fail // SDL_CreateRenderer() failed
+}
+
+@Prefix(SD)
+class SDLDisplayRaw {
+    @Initializer()
+    void* SDInit(char* title)
+
+    @Getter(errorCode)
+    SDLInitErrorCode SDGetErrorCode()
+
+    @Invalidates()
+    void SDDestroy()
+
+    void SDGetSize(int* width, int* height)
+
+    void SDFlush()
+
+    void SDDrawPoint(int x, int y, int r, int g, int b)
+    void SDDrawLine(int x1, int y1, int x2, int y2, int r, int g, int b)
+    void SDDrawRect(int x, int y, int w, int h, int r, int g, int b)
+    void SDFillRect(int x, int y, int w, int h, int r, int g, int b)
+}

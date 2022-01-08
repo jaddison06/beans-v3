@@ -106,7 +106,7 @@ class CodegenClass:
 # each set of annotations is a dict of annotation name to argc
 SUPPORTED_ANNOTATIONS: dict[str, dict[str, int]] = {
     'class': {
-
+        'Prefix': 1
     },
     'function': {
         'Show': 1

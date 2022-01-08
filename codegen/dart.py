@@ -348,7 +348,12 @@ def classes(file: ParsedGenFile) -> str:
             else:
                 if has_annotation(method.annotations, 'Invalidates'):
                     out += '    @mustCallSuper\n'
-                out += f'    {func_class_func_return_type(method)} {method.display_name()}('
+                display_name = method.display_name()
+                if has_annotation(class_.annotations, 'Prefix'):
+                    prefix = get_annotation(class_.annotations, 'Prefix')
+                    if display_name == method.name and display_name.startswith(prefix.args[0]):
+                        display_name = display_name[len(prefix.args[0]):]
+                out += f'    {func_class_func_return_type(method)} {display_name}('
                 out += param_list(method)
 
             out += f"        _validatePointer('{method.display_name()}');\n"

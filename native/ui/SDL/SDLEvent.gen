@@ -1,0 +1,20 @@
+@LinkWithLib(SDL2)
+
+@Prefix(SE)
+class SDLEventRaw {
+    @Initializer()
+    void* SEInit()
+
+    @Invalidates()
+    void SEDestroy()
+
+    void SEGetPos(int* x, int* y)
+    @Getter(key)
+    KeyCode SEGetKey()
+    @Getter(mouseButton)
+    MouseButton SEGetMouseButton()
+    @Getter(type)
+    EventType SEGetType()
+
+    int SEPoll()
+}
