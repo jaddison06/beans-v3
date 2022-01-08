@@ -7,6 +7,39 @@ import 'package:meta/meta.dart';
 
 // ----------FILE: NATIVE\3RDPARTY\LIBE131\E131.GEN----------
 
+// ----------FUNCTION SIGNATURE TYPEDEFS----------
+
+// int e131_test()
+typedef _libe131_func_e131_test_native_sig = Int32 Function();
+typedef _libe131_func_e131_test_sig = int Function();
+
+// ----------LIBE131----------
+
+class libe131 {
+
+    static _libe131_func_e131_test_sig? _e131_test;
+
+    void _initRefs() {
+        if (
+            _e131_test == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/3rdparty/libe131/libe131.dll');
+
+            _e131_test = lib.lookupFunction<_libe131_func_e131_test_native_sig, _libe131_func_e131_test_sig>('e131_test');
+        }
+    }
+
+    libe131() {
+        _initRefs();
+    }
+
+    int test() {
+        return _e131_test!();
+    }
+
+}
+
+
 // ----------ENUMS----------
 
 enum BeansE131ErrorCode {

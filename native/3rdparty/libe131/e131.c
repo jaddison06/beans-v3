@@ -361,6 +361,7 @@ void BeansE131SetValue(BeansE131* self, uint16_t channel, uint8_t level) {
 
 BEANS_BOOL BeansE131Send(BeansE131* self) {
   int ret = e131_send(self->sockfd, &self->packet, &self->dest);
+  self->packet.frame.seq_number++;
   if (ret < 0) return FALSE;
   return TRUE;
 }

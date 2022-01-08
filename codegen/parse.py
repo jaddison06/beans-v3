@@ -76,6 +76,7 @@ class Parser:
                         annotations
                     )
                 )
+                annotations = []
         
         annotation_warnings = out.validate_all_annotations()
         if annotation_warnings != '':
