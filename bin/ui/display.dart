@@ -4,6 +4,7 @@ import 'Colour.dart';
 abstract class Display {
   V2 get size;
 
+  void Destroy();
   void Flush();
 
   void DrawPoint(V2 pos, Colour col);

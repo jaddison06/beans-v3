@@ -8,4 +8,5 @@ abstract class Event {
   MouseButton get mouseButton;
 
   int Poll();
+  void Destroy();
 }

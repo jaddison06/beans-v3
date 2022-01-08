@@ -4,6 +4,7 @@ import 'V2.dart';
 import 'Colour.dart';
 
 class SDLDisplay extends SDLDisplayRaw implements Display {
+  @override
   V2 get size => V2.fromPointers(GetSize);
 
   SDLDisplay(String title) : super(title);
