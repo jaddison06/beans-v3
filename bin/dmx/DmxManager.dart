@@ -6,6 +6,8 @@ import 'FixtureInfo.dart';
 import 'Parameter.dart';
 
 final testChannel = Channel(
+  universe: 1,
+  address: 1,
   fixture: FixtureInfo(
     name: 'Test Fixture',
     addresses: {
@@ -16,22 +18,20 @@ final testChannel = Channel(
 
 class DmxManager {
   DmxInterface interface = SacnInterface('127.0.0.1');
-  final channels = <int, Map<int, Channel>>{
-    1: {
-      1: testChannel
-    }
+  final channels = <int, Channel> {
+    1: testChannel
   };
 
   /// you can call this from wherever you want! please don't though ❤️
   Map<int, Map<int, int>> addresses() {
     final addresses = <int, Map<int, int>>{};
-      for (var uni in channels.entries) {
-        addresses[uni.key] = <int, int>{};
-        for (var channel in uni.value.entries) {
-          final dmxData = channel.value.toDmx();
-          for (var i = 0; i < dmxData.length; i++) {
-            addresses[uni.key]![channel.key + i] = dmxData[i];
-          }
+      for (var channel in channels.values) {
+        if (!addresses.containsKey(channel.universe)) {
+          addresses[channel.universe] = <int, int>{};
+        }
+        final dmxData = channel.toDmx();
+        for (var i = 0; i < dmxData.length; i++) {
+          addresses[channel.universe]![channel.address + i] = dmxData[i];
         }
       }
     return addresses;

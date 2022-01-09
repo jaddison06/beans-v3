@@ -10,7 +10,7 @@ class BeansEngine {
   static var _quit = false;
   static void quit() => _quit = true;
 
-  static void go() async {
+  static void go() {
     dmx = DmxManager();
     _ui = BeansUI();
 

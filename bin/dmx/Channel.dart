@@ -9,8 +9,10 @@ int home(Parameter parameter) {
 
 class Channel {
   FixtureInfo fixture;
+  final int universe;
+  final int address;
   final Map<Parameter, int> _values;
-  Channel({required this.fixture}) :
+  Channel({required this.fixture, required this.universe, required this.address}) :
     _values = { for (var param in fixture.addresses.keys) param: home(param) };
   
   void _checkParam(Parameter param) {
