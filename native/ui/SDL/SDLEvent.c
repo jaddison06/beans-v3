@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct
-{
+typedef struct {
     SDL_Event raw;
 
     EventType type;
@@ -16,8 +15,7 @@ typedef struct
     MouseButton mouseButton;
 } SDLEvent;
 
-SDLEvent* SEInit()
-{
+SDLEvent* SEInit() {
     SDLEvent* out = malloc(sizeof(SDLEvent));
 
     out->type = EventType_None;
@@ -26,30 +24,26 @@ SDLEvent* SEInit()
     return out;
 }
 
-void SEDestroy(SDLEvent* event)
-{
-    free(event->text);
-    free(event);
+void SEDestroy(SDLEvent* self) {
+    free(self->text);
+    free(self);
 }
 
-void SEGetPos(SDLEvent* event, int* x, int* y)
-{
-    *x = event->x;
-    *y = event->y;
+void SEGetPos(SDLEvent* self, int* x, int* y) {
+    *x = self->x;
+    *y = self->y;
 }
 
-Key SEGetKey(SDLEvent* event)
-{
-    return event->key;
+Key SEGetKey(SDLEvent* self) {
+    return self->key;
 }
 
-char* SEGetText(SDLEvent* event)
-{
-    return event->text;
+char* SEGetText(SDLEvent* self) {
+    return self->text;
 }
 
-uint16_t SEGetModifiers(SDLEvent* event) {
-    return event->modifiers;
+uint16_t SEGetModifiers(SDLEvent* self) {
+    return self->modifiers;
 }
 
 BEANS_BOOL HasMod(SDLEvent* self, SDL_Keymod mod) {
@@ -72,20 +66,16 @@ BEANS_BOOL SEHasCaps(SDLEvent* self) {
     return HasMod(self, KMOD_CAPS);
 }
 
-MouseButton SEGetMouseButton(SDLEvent* event)
-{
-    return event->mouseButton;
+MouseButton SEGetMouseButton(SDLEvent* self) {
+    return self->mouseButton;
 }
 
-EventType SEGetType(SDLEvent* event)
-{
-    return event->type;
+EventType SEGetType(SDLEvent* self) {
+    return self->type;
 }
 
-MouseButton TranslateMouseButton(SDLEvent* event)
-{
-    switch (event->raw.button.button)
-    {
+MouseButton TranslateMouseButton(SDLEvent* self) {
+    switch (self->raw.button.button) {
         case SDL_BUTTON_LEFT:   return MouseButton_Left;
         case SDL_BUTTON_MIDDLE: return MouseButton_Middle;
         case SDL_BUTTON_RIGHT:  return MouseButton_Right;
@@ -93,10 +83,8 @@ MouseButton TranslateMouseButton(SDLEvent* event)
     }
 }
 
-Key TranslateKey(SDLEvent* event)
-{
-    switch (event->raw.key.keysym.sym)
-    {
+Key TranslateKey(SDLEvent* self) {
+    switch (self->raw.key.keysym.sym) {
         case SDLK_RETURN:    return Key_Return;
         case SDLK_ESCAPE:    return Key_Escape;
         case SDLK_BACKSPACE: return Key_Backspace;
@@ -125,62 +113,52 @@ Key TranslateKey(SDLEvent* event)
     }
 }
 
-int SEPoll(SDLEvent* event)
-{
-    int out = SDL_PollEvent(&event->raw);
+int SEPoll(SDLEvent* self) {
+    int out = SDL_PollEvent(&self->raw);
 
-    switch (event->raw.type)
-    {
-        case SDL_QUIT:
-        {
-            event->type = EventType_Quit;
+    switch (self->raw.type) {
+        case SDL_QUIT: {
+            self->type = EventType_Quit;
             break;
         }
-        case SDL_KEYDOWN:
-        {
-            event->type = EventType_Key;
-            event->key = TranslateKey(event);
-            event->modifiers = event->raw.key.keysym.mod;
+        case SDL_KEYDOWN: {
+            self->type = EventType_Key;
+            self->key = TranslateKey(self);
+            self->modifiers = self->raw.key.keysym.mod;
             break;
         }
-        case SDL_TEXTINPUT:
-        {
-            event->type = EventType_Text;
-            strcpy(event->text, event->raw.text.text);
+        case SDL_TEXTINPUT: {
+            self->type = EventType_Text;
+            strcpy(self->text, self->raw.text.text);
             break;
         }
-        case SDL_MOUSEMOTION:
-        {
-            event->type = EventType_MouseMove;
-            event->x = event->raw.motion.x;
-            event->y = event->raw.motion.y;
+        case SDL_MOUSEMOTION: {
+            self->type = EventType_MouseMove;
+            self->x = self->raw.motion.x;
+            self->y = self->raw.motion.y;
             break;
         }
-        case SDL_MOUSEBUTTONDOWN:
-        {
-            event->type = EventType_MouseDown;
-            event->x = event->raw.button.x;
-            event->y = event->raw.button.y;
-            event->mouseButton = TranslateMouseButton(event);
+        case SDL_MOUSEBUTTONDOWN: {
+            self->type = EventType_MouseDown;
+            self->x = self->raw.button.x;
+            self->y = self->raw.button.y;
+            self->mouseButton = TranslateMouseButton(self);
             break;
         }
-        case SDL_MOUSEBUTTONUP:
-        {
-            event->type = EventType_MouseUp;
-            event->x = event->raw.button.x;
-            event->y = event->raw.button.y;
-            event->mouseButton = TranslateMouseButton(event);
+        case SDL_MOUSEBUTTONUP: {
+            self->type = EventType_MouseUp;
+            self->x = self->raw.button.x;
+            self->y = self->raw.button.y;
+            self->mouseButton = TranslateMouseButton(self);
             break;
         }
-        case SDL_MOUSEWHEEL:
-        {
-            event->type = EventType_MouseScroll;
-            // todo: how do scroll events work?
+        case SDL_MOUSEWHEEL: {
+            self->type = EventType_MouseScroll;
+            // todo: how do scroll selfs work?
             break;
         }
-        default:
-        {
-            event->type = EventType_None;
+        default: {
+            self->type = EventType_None;
             break;
         }
     }

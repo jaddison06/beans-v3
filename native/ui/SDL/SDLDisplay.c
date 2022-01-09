@@ -3,21 +3,18 @@
 #include <stdio.h>
 #include "native/c_codegen.h"
 
-typedef struct
-{
+typedef struct {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
     SDLInitErrorCode errorCode;
 } SDLDisplay;
 
-SDLInitErrorCode SDGetErrorCode(SDLDisplay* self)
-{
+SDLInitErrorCode SDGetErrorCode(SDLDisplay* self) {
     return self->errorCode;
 }
 
-SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode)
-{
+SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode) {
     printf("SDL error: %s\n", SDL_GetError());
     if (self->window != NULL)
         SDL_DestroyWindow(self->window);
@@ -31,8 +28,7 @@ SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode)
     return self;
 }
 
-SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen)
-{
+SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen) {
     SDLDisplay* out = malloc(sizeof(SDLDisplay));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -56,8 +52,7 @@ SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen)
     return out;
 }
 
-void SDDestroy(SDLDisplay* self)
-{
+void SDDestroy(SDLDisplay* self) {
     SDL_DestroyRenderer(self->renderer);
     SDL_DestroyWindow(self->window);
     SDL_Quit();
@@ -78,13 +73,12 @@ void SDResetClip(SDLDisplay* self) {
     SDL_RenderSetClipRect(self->renderer, NULL);
 }
 
-void SDSetColour(SDLDisplay* self, int r, int g, int b, int a)
-{
+void SDSetColour(SDLDisplay* self, int r, int g, int b, int a) {
     SDL_SetRenderDrawColor(self->renderer, r, g, b, a);
 }
 
-void SDGetSize(SDLDisplay* self, int* w, int* h)
-{/*
+void SDGetSize(SDLDisplay* self, int* w, int* h) {
+/*
     SDL_DisplayMode dm;
     SDL_GetDesktopDisplayMode(0, &dm);
     *w = dm.w;
@@ -93,46 +87,36 @@ void SDGetSize(SDLDisplay* self, int* w, int* h)
     SDL_GetWindowSize(self->window, w, h);
 }
 
-void SDFlush(SDLDisplay* self)
-{
+void SDFlush(SDLDisplay* self) {
     SDL_RenderPresent(self->renderer);
     SDSetColour(self, 0, 0, 0, 255);
     SDL_RenderClear(self->renderer);
 }
 
-void SDDrawPoint(SDLDisplay* self, int x, int y, int r, int g, int b, int a)
-{
+void SDDrawPoint(SDLDisplay* self, int x, int y, int r, int g, int b, int a) {
     SDSetColour(self, r, g, b, a);
     SDL_RenderDrawPoint(self->renderer, x, y);
 }
 
-void SDDrawLine(SDLDisplay* self, int x1, int y1, int x2, int y2, int r, int g, int b, int a)
-{
+void SDDrawLine(SDLDisplay* self, int x1, int y1, int x2, int y2, int r, int g, int b, int a) {
     SDSetColour(self, r, g, b, a);
     SDL_RenderDrawLine(self->renderer, x1, y1, x2, y2);
 }
 
-void SDDrawRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a)
-{
+void SDDrawRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a) {
     SDL_Rect rect = {x, y, w, h};
     SDSetColour(self, r, g, b, a);
     SDL_RenderDrawRect(self->renderer, &rect);
 }
 
-void SDFillRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a)
-{
+void SDFillRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int b, int a) {
     SDL_Rect rect = {x, y, w, h};
     SDSetColour(self, r, g, b, a);
     SDL_RenderFillRect(self->renderer, &rect);
 }
 
 SDL_Texture* GetTextTexture(SDLDisplay* self, TTF_Font* font, char* text, int r, int g, int b, int a, int* width, int* height) {
-    SDL_Color col = {
-        r: r,
-        g: g,
-        b: b,
-        a: a
-    };
+    SDL_Color col = {r, g, b, a};
 
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, col);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(self->renderer, textSurface);
@@ -143,12 +127,7 @@ SDL_Texture* GetTextTexture(SDLDisplay* self, TTF_Font* font, char* text, int r,
 }
 
 void RenderTexture(SDLDisplay* self, SDL_Texture* texture, int x, int y, int width, int height) {
-    SDL_Rect renderRect = {
-        x: x,
-        y: y,
-        w: width,
-        h: height
-    };
+    SDL_Rect renderRect = {x, y, width, height};
     SDL_RenderCopy(self->renderer, texture, NULL, &renderRect);
 }
 
