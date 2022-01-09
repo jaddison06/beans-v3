@@ -1,9 +1,11 @@
 import '../dmx/DmxManager.dart';
 import '../ui/BeansUI.dart';
+import 'CommandLine.dart';
 
 class BeansEngine {
-  static late DmxManager dmx;
-  static late BeansUI _ui;
+  static late final DmxManager dmx;
+  static final commandLine = CommandLine();
+  static late final BeansUI _ui;
 
   static var _quit = false;
   static void quit() => _quit = true;

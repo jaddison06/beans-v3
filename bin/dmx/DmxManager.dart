@@ -22,6 +22,7 @@ class DmxManager {
     }
   };
 
+  /// you can call this from wherever you want! please don't though ❤️
   Map<int, Map<int, int>> addresses() {
     final addresses = <int, Map<int, int>>{};
       for (var uni in channels.entries) {
@@ -37,8 +38,6 @@ class DmxManager {
   }
 
   void frame() {
-    final data = addresses();
-    print('Sending $data');
-    interface.Send(data);
+    interface.Send(addresses());
   }
 }

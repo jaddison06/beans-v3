@@ -8,6 +8,11 @@ import 'TestWindow.dart';
 import 'Event.dart';
 import '../dart_codegen.dart';
 import '../core/BeansEngine.dart';
+import 'package:intl/intl.dart';
+
+const commands = {
+  'c': 'Channel'
+};
 
 class _WindowInfo {
   // size and pos are in blocks
@@ -33,13 +38,15 @@ class UIBase extends Renderable {
     )
   ];
 
-  _WindowInfo? _focusedWin;
+  _WindowInfo? _keyboardFocus;
   
   var _modifyState = _WMModifyState.None;
   _WindowInfo? _modifyWin;
   V2? _modifyData;
 
-  static final minBlockSize = 40;
+  final minBlockSize = 40;
+  final topAreaHeight = 30;
+  final bottomAreaHeight = 80;
 
   V2 _getBlockSize(V2 constraints) => V2(
     minBlockSize + ((constraints.x % minBlockSize) ~/ (constraints.x ~/ minBlockSize)),
@@ -72,22 +79,40 @@ class UIBase extends Renderable {
 
   @override
   void render(Display display, V2 pos, V2 constraints) {
+    final windowAreaPos = pos + V2(0, topAreaHeight);
+    final windowAreaSize = constraints - V2(0, topAreaHeight) - V2(0, bottomAreaHeight);
+
+    final topAreaSize = V2(constraints.x, topAreaHeight);
+
+    final bottomAreaPos = V2(pos.x, pos.y + topAreaHeight + windowAreaSize.y);
+    final bottomAreaSize = V2(constraints.x, bottomAreaHeight);
+
+    // ---------- TOP ----------
+    display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.magenta);
+    display.DrawText(Fonts()[null][25], DateFormat('hh:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.magenta);
+
+    // ---------- BOTTOM ----------
+    
+
+    // ---------- WINDOWS ----------
+
     // Use clip so we don't accidentally draw plusses over the edges
-    display.SetClip(pos, constraints);
+    display.SetClip(windowAreaPos, windowAreaSize);
 
-    final blockSize = _getBlockSize(constraints);
+    // todo: blockSize is still slightly suspect, could just be float precision wank. TEST!
+    final blockSize = _getBlockSize(windowAreaSize);
 
-    for (var x = 0; x <= constraints.x; x += blockSize.x) {
-      for (var y = 0; y <= constraints.y; y += blockSize.y) {
+    for (var x = 0; x <= windowAreaSize.x; x += blockSize.x) {
+      for (var y = 0; y <= windowAreaSize.y; y += blockSize.y) {
         final length = 4;
         display.DrawLine(
-          pos + V2(x, y - (length ~/ 2)),
-          pos + V2(x, y + (length ~/ 2)),
+          windowAreaPos + V2(x, y - (length ~/ 2)),
+          windowAreaPos + V2(x, y + (length ~/ 2)),
           Colour.magenta
         );
         display.DrawLine(
-          pos + V2(x - (length ~/ 2), y),
-          pos + V2(x + (length ~/ 2), y),
+          windowAreaPos + V2(x - (length ~/ 2), y),
+          windowAreaPos + V2(x + (length ~/ 2), y),
           Colour.magenta
         );
       }
@@ -96,7 +121,7 @@ class UIBase extends Renderable {
     display.ResetClip();
 
     for (var window in _windows) {
-      final winPos = pos + window.pos * blockSize;
+      final winPos = windowAreaPos + window.pos * blockSize;
       final winSize = window.size * blockSize;
       final contentPos = winPos + V2(0, blockSize.y);
       final contentSize = winSize - V2(0, blockSize.y);
