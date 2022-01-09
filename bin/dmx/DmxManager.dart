@@ -21,7 +21,6 @@ class DmxManager {
       1: testChannel
     }
   };
-  var _quit = false;
 
   Map<int, Map<int, int>> addresses() {
     final addresses = <int, Map<int, int>>{};
@@ -37,18 +36,9 @@ class DmxManager {
     return addresses;
   }
 
-  Future<void> go() async {
-    while (!_quit) {
-      final data = addresses();
-      print('Sending $data');
-      interface.Send(data);
-
-      // just over 60hz
-      await Future.delayed(Duration(milliseconds: 15));
-    }
-  }
-
-  void quit() {
-    _quit = true;
+  void frame() {
+    final data = addresses();
+    print('Sending $data');
+    interface.Send(data);
   }
 }
