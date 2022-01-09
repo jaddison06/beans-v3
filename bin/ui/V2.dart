@@ -5,6 +5,39 @@ class V2 {
   final int x, y;
   V2(this.x, this.y);
 
+  V2 operator+(Object other) {
+    // using if instead of switch so we get automatic type promotion
+    if (other is V2) {
+      return V2(x + other.x, y + other.y);
+    }
+    else if (other is int) {
+      return V2(x + other, y + other);
+    }
+    else {
+      throw Exception("Can't add a V2 to an object of type ${other.runtimeType}.");
+    }
+  }
+  
+  V2 operator-() {
+    return V2(-x, -y);
+  }
+
+  V2 operator-(dynamic other) {
+    return this + -other;
+  }
+
+  bool containedBy(V2 pos, V2 size) {
+    return
+      x >= pos.x &&
+      y >= pos.y &&
+      x <= (pos.x + size.x) &&
+      y <= (pos.y + size.y);
+  }
+
+  static V2 square(size) => V2(size, size);
+
+  static V2 origin() => V2(0, 0);
+
   static Pointer<Int32> _xPtr = nullptr, _yPtr = nullptr;
 
   static V2 fromPointers(void Function(Pointer<Int32>, Pointer<Int32>) populate) {

@@ -7,7 +7,8 @@ class DmxManager {
 
   Future<void> go() async {
     while (!_quit) {
-      
+      // just over 60hz
+      await Future.delayed(Duration(milliseconds: 15));
     }
   }
 

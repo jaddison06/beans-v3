@@ -3,10 +3,14 @@ import 'SDLDisplay.dart';
 import 'Event.dart';
 import 'SDLEvent.dart';
 import '../dart_codegen.dart';
+import 'Renderable.dart';
+import 'V2.dart';
+import 'ExpandBox.dart';
 
 class BeansUI {
   final Display _display = SDLDisplay('beans');
   final Event _event = SDLEvent();
+  Renderable root = ExpandBox();
 
   var _quit = false;
 
@@ -22,17 +26,27 @@ class BeansUI {
   void _onEvent() {
     switch (_event.type) {
       case EventType.Quit: _quit = true; break;
+      case EventType.KeyDown: {
+        if (_event.key == KeyCode.Escape) _quit = true;
+        break;
+      }
     
       default: {}
     }
   }
 
   void _frame() {
-
+    root.render(
+      _display,
+      V2.origin(),
+      _display.size
+    );
+    _display.Flush();
   }
 
   void destroy() {
     _event.Destroy();
     _display.Destroy();
+    V2.destroy();
   }
 }
