@@ -14,7 +14,7 @@ class BeansUI {
 
   var _quit = false;
 
-  void go() {
+  Future<void> go() async {
     libSDLFont().Init();
     while (!_quit) {
       while (_event.Poll() > 0) {
@@ -24,16 +24,14 @@ class BeansUI {
     }
   }
 
+  void quit() => _quit = true;
+
   void _onEvent() {
-    switch (_event.type) {
-      case EventType.Quit: _quit = true; break;
-      case EventType.KeyDown: {
-        if (_event.key == KeyCode.Escape) _quit = true;
-        break;
-      }
-    
-      default: {}
+    if (_event.type == EventType.Quit) {
+      quit();
+      return;
     }
+    base.onEvent(V2.origin(), _display.size, _event);
   }
 
   void _frame() {
@@ -49,6 +47,7 @@ class BeansUI {
     _event.Destroy();
     _display.Destroy();
     libSDLFont().Quit();
+    // V2 is in the UI module, so I think BeansUI is responsible for it
     V2.destroy();
   }
 }

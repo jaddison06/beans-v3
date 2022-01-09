@@ -1,5 +1,5 @@
-import 'core/Beans.dart';
+import 'core/BeansEngine.dart';
 
 void main(List<String> arguments) {
-  Beans().go();
+  BeansEngine.go();
 }

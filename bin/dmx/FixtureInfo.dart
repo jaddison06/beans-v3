@@ -3,7 +3,7 @@ import 'Parameter.dart';
 class AddressInfo {
   int offset;
   bool is16Bit;
-  AddressInfo({required this.offset, this.is16Bit = false});
+  AddressInfo(this.offset, {this.is16Bit = false});
 }
 
 class FixtureInfo {

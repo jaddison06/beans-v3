@@ -32,6 +32,8 @@ class V2 {
   V2 operator *(dynamic other) {
     if (other is int) {
       return V2(x * other, y * other);
+    } else if (other is V2) {
+      return V2(x * other.x, y * other.y);
     } else {
       throw Exception("Can't multiply a V2 by an object of type ${other.runtimeType}.");
     }

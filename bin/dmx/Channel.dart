@@ -16,6 +16,22 @@ class Channel {
   void _checkParam(Parameter param) {
     if (!_values.containsKey(param)) throw Exception("Fixture of type ${fixture.name} has no parameter '${param.name}'");
   }
+
+  List<int> toDmx() {
+    final out = <int>[];
+
+    for (var address in fixture.addresses.entries.toList()..sort((a, b) => a.value.offset - b.value.offset)) {
+      final value = _values[address.key]!;
+      if (address.value.is16Bit) {
+        out.add(value & 0xFF00);
+        out.add(value & 0xFF);
+      } else {
+        out.add(value);
+      }
+    }
+
+    return out;
+  }
   
   void setValue(Parameter param, int value) {
     _checkParam(param);
@@ -24,7 +40,7 @@ class Channel {
     }
     if (fixture.addresses[param]!.is16Bit) {
       if (value > 65535) {
-        throw Exception('16-bit DMX value cannot be more than 65536 (got $value)');
+        throw Exception('16-bit DMX value cannot be more than 65535 (got $value)');
       }
     } else {
       if (value > 255) {
