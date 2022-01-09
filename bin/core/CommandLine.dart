@@ -34,6 +34,7 @@ class CommandLine {
   }
 
   void backspace() {
+    if (isExecuted) clear();
     if (_commands.isEmpty) return;
     _commands.removeLast();
   }
@@ -153,6 +154,7 @@ class CommandLine {
   @override
   String toString() {
     var out = '';
+    if (_commands.isEmpty) return out;
     for (var token in _tokens()) {
       if (token.isNumeric) {
         out += token;

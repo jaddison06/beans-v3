@@ -37,6 +37,8 @@ class SDLDisplay extends SDLDisplayRaw implements Display {
 
   @override
   void DrawText(covariant SDLFont font, String text, V2 pos, Colour col) {
+    // SDL doesn't like drawing empty strings :(
+    if (text == '') return;
     cDrawText(font, text, pos.x, pos.y, col.r, col.g, col.b, col.a);
   }
 }

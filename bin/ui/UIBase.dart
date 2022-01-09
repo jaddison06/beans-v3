@@ -92,7 +92,7 @@ class UIBase extends Renderable {
     display.DrawText(Fonts()[null][25], DateFormat('hh:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.magenta);
 
     // ---------- BOTTOM ----------
-    
+    display.DrawText(Fonts()[null][20], BeansEngine.commandLine.toString(), bottomAreaPos + V2(10, 10), Colour.magenta);
 
     // ---------- WINDOWS ----------
 
@@ -139,6 +139,29 @@ class UIBase extends Renderable {
   @override
   void onEvent(V2 pos, V2 constraints, Event event) {
     if (event.type == EventType.KeyDown && event.key == KeyCode.Escape) BeansEngine.quit();
+    switch (event.type) {
+      case EventType.KeyDown: {
+        if (event.key == KeyCode.Escape) {
+          BeansEngine.quit();
+        } else if (_keyboardFocus != null) {
+          _keyboardFocus!.win.onEvent(pos, event);
+        } else {
+          if (event.key == KeyCode.Backspace) {
+            if (event.modifiers.contains(Modifier.Shift)) {
+              BeansEngine.commandLine.clear();
+            } else {
+              BeansEngine.commandLine.backspace();
+            }
+          } else if (event.key == KeyCode.Return) {
+            BeansEngine.commandLine.execute();
+          } else {
+            BeansEngine.commandLine.addCommand(KeyCodeToString(event.key));
+          }
+        }
+        break;
+      }
+      default: {}
+    }
     _windows.first.win.onEvent(pos, event);
   }
 }

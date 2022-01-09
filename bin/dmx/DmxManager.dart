@@ -5,9 +5,9 @@ import 'Channel.dart';
 import 'FixtureInfo.dart';
 import 'Parameter.dart';
 
-final testChannel = Channel(
+Channel testChannel(int addr) => Channel(
   universe: 1,
-  address: 1,
+  address: addr,
   fixture: FixtureInfo(
     name: 'Test Fixture',
     addresses: {
@@ -19,7 +19,11 @@ final testChannel = Channel(
 class DmxManager {
   DmxInterface interface = SacnInterface('127.0.0.1');
   final channels = <int, Channel> {
-    1: testChannel
+    1: testChannel(1),
+    2: testChannel(2),
+    3: testChannel(3),
+    4: testChannel(4),
+    5: testChannel(5)
   };
 
   /// you can call this from wherever you want! please don't though ❤️
