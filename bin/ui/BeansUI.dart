@@ -5,16 +5,17 @@ import 'SDLEvent.dart';
 import '../dart_codegen.dart';
 import 'Renderable.dart';
 import 'V2.dart';
-import 'ExpandBox.dart';
+import 'UIBase.dart';
 
 class BeansUI {
   final Display _display = SDLDisplay('beans');
   final Event _event = SDLEvent();
-  Renderable root = ExpandBox();
+  Renderable root = UIBase();
 
   var _quit = false;
 
   void go() {
+    libSDLFont().Init();
     while (!_quit) {
       while (_event.Poll() > 0) {
         _onEvent();
@@ -47,6 +48,7 @@ class BeansUI {
   void destroy() {
     _event.Destroy();
     _display.Destroy();
+    libSDLFont().Quit();
     V2.destroy();
   }
 }

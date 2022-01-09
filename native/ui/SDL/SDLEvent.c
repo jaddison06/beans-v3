@@ -9,6 +9,7 @@ typedef struct
 
     int x, y;
     KeyCode key;
+    uint16_t modifiers;
     MouseButton mouseButton;
 } SDLEvent;
 
@@ -35,6 +36,26 @@ void SEGetPos(SDLEvent* event, int* x, int* y)
 KeyCode SEGetKey(SDLEvent* event)
 {
     return event->key;
+}
+
+BEANS_BOOL HasMod(SDLEvent* self, SDL_Keymod mod) {
+    return self->modifiers & mod > 0;
+}
+
+BEANS_BOOL SEHasShift(SDLEvent* self) {
+    return HasMod(self, KMOD_SHIFT);
+}
+
+BEANS_BOOL SEHasControl(SDLEvent* self) {
+    return HasMod(self, KMOD_CTRL);
+}
+
+BEANS_BOOL SEHasAlt(SDLEvent* self) {
+    return HasMod(self, KMOD_ALT);
+}
+
+BEANS_BOOL SEHasCaps(SDLEvent* self) {
+    return HasMod(self, KMOD_CAPS);
 }
 
 MouseButton SEGetMouseButton(SDLEvent* event)
@@ -211,6 +232,7 @@ int SEPoll(SDLEvent* event)
         {
             event->type = EventType_KeyDown;
             event->key = TranslateKey(event);
+            event->modifiers = event->raw.key.keysym.mod;
             break;
         }
         case SDL_KEYUP:

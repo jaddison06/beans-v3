@@ -16,5 +16,10 @@ class SDLEventRaw {
     @Getter(type)
     EventType SEGetType()
 
+    bool SEHasShift()
+    bool SEHasControl()
+    bool SEHasAlt()
+    bool SEHasCaps()
+
     int SEPoll()
 }

@@ -36,6 +36,13 @@ typedef enum {
 } MouseButton;
 
 typedef enum {
+    Modifier_Shift = 0,
+    Modifier_Control = 1,
+    Modifier_Alt = 2,
+    Modifier_Caps = 3,
+} Modifier;
+
+typedef enum {
     KeyCode_A = 0,
     KeyCode_B = 1,
     KeyCode_C = 2,
@@ -170,5 +177,7 @@ typedef enum {
 } SDLInitErrorCode;
 
 // ----------NATIVE\UI\SDL\SDLEVENT.GEN----------
+
+// ----------NATIVE\UI\SDL\SDLFONT.GEN----------
 
 #endif // C_CODEGEN_H

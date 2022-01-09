@@ -26,6 +26,14 @@ class V2 {
     return this + -other;
   }
 
+  V2 operator *(dynamic other) {
+    if (other is int) {
+      return V2(x * other, y * other);
+    } else {
+      throw Exception("Can't multiply a V2 by an object of type ${other.runtimeType}.");
+    }
+  }
+
   bool containedBy(V2 pos, V2 size) {
     return
       x >= pos.x &&

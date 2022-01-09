@@ -2,6 +2,7 @@ import '../dart_codegen.dart';
 import 'Display.dart';
 import 'V2.dart';
 import 'Colour.dart';
+import 'SDLFont.dart';
 
 class SDLDisplay extends SDLDisplayRaw implements Display {
   @override
@@ -27,5 +28,10 @@ class SDLDisplay extends SDLDisplayRaw implements Display {
   @override
   void FillRect(V2 pos, V2 size, Colour col) {
     cFillRect(pos.x, pos.y, size.x, size.y, col.r, col.g, col.b, col.a);
+  }
+
+  @override
+  void DrawText(covariant SDLFont font, String text, V2 pos, Colour col) {
+    cDrawText(font, text, pos.x, pos.y, col.r, col.g, col.b, col.a);
   }
 }

@@ -16,6 +16,13 @@ enum MouseButton {
     Unknown
 }
 
+enum Modifier {
+    Shift
+    Control
+    Alt
+    Caps
+}
+
 enum KeyCode {
     A
     B

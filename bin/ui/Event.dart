@@ -6,6 +6,7 @@ abstract class Event {
   V2 get pos;
   KeyCode get key;
   MouseButton get mouseButton;
+  List<Modifier> get modifiers;
 
   int Poll();
   void Destroy();

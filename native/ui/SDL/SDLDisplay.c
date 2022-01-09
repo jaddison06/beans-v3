@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "native/c_codegen.h"
 
@@ -103,4 +104,37 @@ void SDFillRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int 
     SDL_Rect rect = {x, y, w, h};
     SDSetColour(self, r, g, b, a);
     SDL_RenderFillRect(self->renderer, &rect);
+}
+
+SDL_Texture* GetTextTexture(SDLDisplay* self, TTF_Font* font, char* text, int r, int g, int b, int a, int* width, int* height) {
+    SDL_Color col = {
+        r: r,
+        g: g,
+        b: b,
+        a: a
+    };
+
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, col);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(self->renderer, textSurface);
+    *width = textSurface->w;
+    *height = textSurface->h;
+    SDL_FreeSurface(textSurface);
+    return textTexture;
+}
+
+void RenderTexture(SDLDisplay* self, SDL_Texture* texture, int x, int y, int width, int height) {
+    SDL_Rect renderRect = {
+        x: x,
+        y: y,
+        w: width,
+        h: height
+    };
+    SDL_RenderCopy(self->renderer, texture, NULL, &renderRect);
+}
+
+void SDDrawText(SDLDisplay* self, TTF_Font* font, char* text, int x, int y, int r, int g, int b, int a) {
+    int width, height;
+    SDL_Texture* textTexture = GetTextTexture(self, font, text, r, g, b, a, &width, &height);
+    RenderTexture(self, textTexture, x, y, width, height);
+    SDL_DestroyTexture(textTexture);
 }

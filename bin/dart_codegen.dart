@@ -169,6 +169,25 @@ String MouseButtonToString(MouseButton val) {
     }
 }
 
+enum Modifier {
+    Shift,
+    Control,
+    Alt,
+    Caps,
+}
+
+Modifier ModifierFromInt(int val) => Modifier.values[val];
+int ModifierToInt(Modifier val) => Modifier.values.indexOf(val);
+
+String ModifierToString(Modifier val) {
+    switch (val) {
+        case Modifier.Shift: { return 'Shift'; }
+        case Modifier.Control: { return 'Control'; }
+        case Modifier.Alt: { return 'Alt'; }
+        case Modifier.Caps: { return 'Caps'; }
+    }
+}
+
 enum KeyCode {
     A,
     B,
@@ -487,6 +506,10 @@ typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig = void Function
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int, int);
 
+// void SDDrawText(void* struct_ptr, SDLFontRaw* font, char* text, int x, int y, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_native_sig = Void Function(Pointer<Void>, Pointer<Void>, Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig = void Function(Pointer<Void>, Pointer<Void>, Pointer<Utf8>, int, int, int, int, int, int);
+
 // ----------CLASS IMPLEMENTATIONS----------
 
 class SDLDisplayRaw {
@@ -507,6 +530,7 @@ class SDLDisplayRaw {
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig? _SDDrawLine;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig? _SDDrawRect;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig? _SDFillRect;
+    static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig? _SDDrawText;
 
     void _initRefs() {
         if (
@@ -518,7 +542,8 @@ class SDLDisplayRaw {
             _SDDrawPoint == null ||
             _SDDrawLine == null ||
             _SDDrawRect == null ||
-            _SDFillRect == null
+            _SDFillRect == null ||
+            _SDDrawText == null
         ) {
             final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLDisplay.dll');
 
@@ -531,6 +556,7 @@ class SDLDisplayRaw {
             _SDDrawLine = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig>('SDDrawLine');
             _SDDrawRect = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig>('SDDrawRect');
             _SDFillRect = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig>('SDFillRect');
+            _SDDrawText = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig>('SDDrawText');
         }
     }
 
@@ -590,6 +616,11 @@ class SDLDisplayRaw {
         return _SDFillRect!(structPointer, x, y, w, h, r, g, b, a);
     }
 
+    void cDrawText(SDLFontRaw font, String text, int x, int y, int r, int g, int b, int a) {
+        _validatePointer('cDrawText');
+        return _SDDrawText!(structPointer, font.structPointer, text.toNativeUtf8(), x, y, r, g, b, a);
+    }
+
 }
 
 // ----------FILE: NATIVE\UI\SDL\SDLEVENT.GEN----------
@@ -622,6 +653,22 @@ typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig = int Functio
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig = Int32 Function(Pointer<Void>);
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig = int Function(Pointer<Void>);
 
+// bool SEHasShift(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig = int Function(Pointer<Void>);
+
+// bool SEHasControl(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig = int Function(Pointer<Void>);
+
+// bool SEHasAlt(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig = int Function(Pointer<Void>);
+
+// bool SEHasCaps(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig = int Function(Pointer<Void>);
+
 // int SEPoll(void* struct_ptr)
 typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig = Int32 Function(Pointer<Void>);
 typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig = int Function(Pointer<Void>);
@@ -643,6 +690,10 @@ class SDLEventRaw {
     static _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig? _SEGetKey;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig? _SEGetMouseButton;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig? _SEGetType;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig? _SEHasShift;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig? _SEHasControl;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig? _SEHasAlt;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig? _SEHasCaps;
     static _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig? _SEPoll;
 
     void _initRefs() {
@@ -653,6 +704,10 @@ class SDLEventRaw {
             _SEGetKey == null ||
             _SEGetMouseButton == null ||
             _SEGetType == null ||
+            _SEHasShift == null ||
+            _SEHasControl == null ||
+            _SEHasAlt == null ||
+            _SEHasCaps == null ||
             _SEPoll == null
         ) {
             final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLEvent.dll');
@@ -663,6 +718,10 @@ class SDLEventRaw {
             _SEGetKey = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig>('SEGetKey');
             _SEGetMouseButton = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig>('SEGetMouseButton');
             _SEGetType = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig>('SEGetType');
+            _SEHasShift = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig>('SEHasShift');
+            _SEHasControl = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig>('SEHasControl');
+            _SEHasAlt = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig>('SEHasAlt');
+            _SEHasCaps = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig>('SEHasCaps');
             _SEPoll = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig>('SEPoll');
         }
     }
@@ -708,9 +767,148 @@ class SDLEventRaw {
         return EventTypeFromInt(_SEGetType!(structPointer));
     }
 
+    bool HasShift() {
+        _validatePointer('SEHasShift');
+        return (_SEHasShift!(structPointer)) == 1;
+    }
+
+    bool HasControl() {
+        _validatePointer('SEHasControl');
+        return (_SEHasControl!(structPointer)) == 1;
+    }
+
+    bool HasAlt() {
+        _validatePointer('SEHasAlt');
+        return (_SEHasAlt!(structPointer)) == 1;
+    }
+
+    bool HasCaps() {
+        _validatePointer('SEHasCaps');
+        return (_SEHasCaps!(structPointer)) == 1;
+    }
+
     int Poll() {
         _validatePointer('SEPoll');
         return _SEPoll!(structPointer);
+    }
+
+}
+
+// ----------FILE: NATIVE\UI\SDL\SDLFONT.GEN----------
+
+// ----------FUNCTION SIGNATURE TYPEDEFS----------
+
+// bool SFInit()
+typedef _libSDLFont_func_SFInit_native_sig = Uint8 Function();
+typedef _libSDLFont_func_SFInit_sig = int Function();
+
+// void SFQuit()
+typedef _libSDLFont_func_SFQuit_native_sig = Void Function();
+typedef _libSDLFont_func_SFQuit_sig = void Function();
+
+// ----------LIBSDLFONT----------
+
+class libSDLFont {
+
+    static _libSDLFont_func_SFInit_sig? _SFInit;
+    static _libSDLFont_func_SFQuit_sig? _SFQuit;
+
+    void _initRefs() {
+        if (
+            _SFInit == null ||
+            _SFQuit == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
+
+            _SFInit = lib.lookupFunction<_libSDLFont_func_SFInit_native_sig, _libSDLFont_func_SFInit_sig>('SFInit');
+            _SFQuit = lib.lookupFunction<_libSDLFont_func_SFQuit_native_sig, _libSDLFont_func_SFQuit_sig>('SFQuit');
+        }
+    }
+
+    libSDLFont() {
+        _initRefs();
+    }
+
+    bool Init() {
+        return (_SFInit!()) == 1;
+    }
+
+    void Quit() {
+        return _SFQuit!();
+    }
+
+}
+
+
+// ----------FUNC SIG TYPEDEFS FOR CLASSES----------
+
+// ----------SDLFONTRAW----------
+
+// void* SFCreate(char* family, int size)
+typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig = Pointer<Void> Function(Pointer<Utf8>, Int32);
+typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_sig = Pointer<Void> Function(Pointer<Utf8>, int);
+
+// void SFDestroy(void* struct_ptr)
+typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig = Void Function(Pointer<Void>);
+typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig = void Function(Pointer<Void>);
+
+// void SFGetTextSize(void* struct_ptr, char* text, int* width, int* height)
+typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig = Void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
+typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig = void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
+
+// ----------CLASS IMPLEMENTATIONS----------
+
+class SDLFontRaw {
+    Pointer<Void> structPointer = nullptr;
+
+    void _validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('SDLFontRaw.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    static _libSDLFont_class_SDLFontRaw_method_SFCreate_sig? _SFCreate;
+    static _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig? _SFDestroy;
+    static _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig? _SFGetTextSize;
+
+    void _initRefs() {
+        if (
+            _SFCreate == null ||
+            _SFDestroy == null ||
+            _SFGetTextSize == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
+
+            _SFCreate = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig, _libSDLFont_class_SDLFontRaw_method_SFCreate_sig>('SFCreate');
+            _SFDestroy = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig, _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig>('SFDestroy');
+            _SFGetTextSize = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig, _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig>('SFGetTextSize');
+        }
+    }
+
+    SDLFontRaw(String family, int size) {
+        _initRefs();
+        structPointer = _SFCreate!(family.toNativeUtf8(), size);
+    }
+
+    SDLFontRaw.fromPointer(Pointer<Void> ptr) {
+        _initRefs();
+        structPointer = ptr;
+    }
+
+    @mustCallSuper
+    void Destroy() {
+        _validatePointer('SFDestroy');
+        final out = _SFDestroy!(structPointer);
+
+        // this method invalidates the pointer, probably by freeing memory
+        structPointer = nullptr;
+
+        return out;
+    }
+
+    void GetTextSize(String text, Pointer<Int32> width, Pointer<Int32> height) {
+        _validatePointer('SFGetTextSize');
+        return _SFGetTextSize!(structPointer, text.toNativeUtf8(), width, height);
     }
 
 }
