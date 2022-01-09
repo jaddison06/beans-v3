@@ -83,32 +83,32 @@ KeyCode TranslateKey(SDLEvent* event)
 {
     switch (event->raw.key.keysym.sym)
     {
-        case SDLK_a: return KeyCode_A;
-        case SDLK_b: return KeyCode_B;
-        case SDLK_c: return KeyCode_C;
-        case SDLK_d: return KeyCode_D;
-        case SDLK_e: return KeyCode_E;
-        case SDLK_f: return KeyCode_F;
-        case SDLK_g: return KeyCode_G;
-        case SDLK_h: return KeyCode_H;
-        case SDLK_i: return KeyCode_I;
-        case SDLK_j: return KeyCode_J;
-        case SDLK_k: return KeyCode_K;
-        case SDLK_l: return KeyCode_L;
-        case SDLK_m: return KeyCode_M;
-        case SDLK_n: return KeyCode_N;
-        case SDLK_o: return KeyCode_O;
-        case SDLK_p: return KeyCode_P;
-        case SDLK_q: return KeyCode_Q;
-        case SDLK_r: return KeyCode_R;
-        case SDLK_s: return KeyCode_S;
-        case SDLK_t: return KeyCode_T;
-        case SDLK_u: return KeyCode_U;
-        case SDLK_v: return KeyCode_V;
-        case SDLK_w: return KeyCode_W;
-        case SDLK_x: return KeyCode_X;
-        case SDLK_y: return KeyCode_Y;
-        case SDLK_z: return KeyCode_Z;
+        case SDLK_a: return KeyCode_a;
+        case SDLK_b: return KeyCode_b;
+        case SDLK_c: return KeyCode_c;
+        case SDLK_d: return KeyCode_d;
+        case SDLK_e: return KeyCode_e;
+        case SDLK_f: return KeyCode_f;
+        case SDLK_g: return KeyCode_g;
+        case SDLK_h: return KeyCode_h;
+        case SDLK_i: return KeyCode_i;
+        case SDLK_j: return KeyCode_j;
+        case SDLK_k: return KeyCode_k;
+        case SDLK_l: return KeyCode_l;
+        case SDLK_m: return KeyCode_m;
+        case SDLK_n: return KeyCode_n;
+        case SDLK_o: return KeyCode_o;
+        case SDLK_p: return KeyCode_p;
+        case SDLK_q: return KeyCode_q;
+        case SDLK_r: return KeyCode_r;
+        case SDLK_s: return KeyCode_s;
+        case SDLK_t: return KeyCode_t;
+        case SDLK_u: return KeyCode_u;
+        case SDLK_v: return KeyCode_v;
+        case SDLK_w: return KeyCode_w;
+        case SDLK_x: return KeyCode_x;
+        case SDLK_y: return KeyCode_y;
+        case SDLK_z: return KeyCode_z;
 
         case SDLK_1: return KeyCode_One;
         case SDLK_2: return KeyCode_Two;

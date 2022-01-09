@@ -189,32 +189,32 @@ String ModifierToString(Modifier val) {
 }
 
 enum KeyCode {
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z,
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    k,
+    l,
+    m,
+    n,
+    o,
+    p,
+    q,
+    r,
+    s,
+    t,
+    u,
+    v,
+    w,
+    x,
+    y,
+    z,
     One,
     Two,
     Three,
@@ -318,32 +318,32 @@ int KeyCodeToInt(KeyCode val) => KeyCode.values.indexOf(val);
 
 String KeyCodeToString(KeyCode val) {
     switch (val) {
-        case KeyCode.A: { return 'A'; }
-        case KeyCode.B: { return 'B'; }
-        case KeyCode.C: { return 'C'; }
-        case KeyCode.D: { return 'D'; }
-        case KeyCode.E: { return 'E'; }
-        case KeyCode.F: { return 'F'; }
-        case KeyCode.G: { return 'G'; }
-        case KeyCode.H: { return 'H'; }
-        case KeyCode.I: { return 'I'; }
-        case KeyCode.J: { return 'J'; }
-        case KeyCode.K: { return 'K'; }
-        case KeyCode.L: { return 'L'; }
-        case KeyCode.M: { return 'M'; }
-        case KeyCode.N: { return 'N'; }
-        case KeyCode.O: { return 'O'; }
-        case KeyCode.P: { return 'P'; }
-        case KeyCode.Q: { return 'Q'; }
-        case KeyCode.R: { return 'R'; }
-        case KeyCode.S: { return 'S'; }
-        case KeyCode.T: { return 'T'; }
-        case KeyCode.U: { return 'U'; }
-        case KeyCode.V: { return 'V'; }
-        case KeyCode.W: { return 'W'; }
-        case KeyCode.X: { return 'X'; }
-        case KeyCode.Y: { return 'Y'; }
-        case KeyCode.Z: { return 'Z'; }
+        case KeyCode.a: { return 'a'; }
+        case KeyCode.b: { return 'b'; }
+        case KeyCode.c: { return 'c'; }
+        case KeyCode.d: { return 'd'; }
+        case KeyCode.e: { return 'e'; }
+        case KeyCode.f: { return 'f'; }
+        case KeyCode.g: { return 'g'; }
+        case KeyCode.h: { return 'h'; }
+        case KeyCode.i: { return 'i'; }
+        case KeyCode.j: { return 'j'; }
+        case KeyCode.k: { return 'k'; }
+        case KeyCode.l: { return 'l'; }
+        case KeyCode.m: { return 'm'; }
+        case KeyCode.n: { return 'n'; }
+        case KeyCode.o: { return 'o'; }
+        case KeyCode.p: { return 'p'; }
+        case KeyCode.q: { return 'q'; }
+        case KeyCode.r: { return 'r'; }
+        case KeyCode.s: { return 's'; }
+        case KeyCode.t: { return 't'; }
+        case KeyCode.u: { return 'u'; }
+        case KeyCode.v: { return 'v'; }
+        case KeyCode.w: { return 'w'; }
+        case KeyCode.x: { return 'x'; }
+        case KeyCode.y: { return 'y'; }
+        case KeyCode.z: { return 'z'; }
         case KeyCode.One: { return '1'; }
         case KeyCode.Two: { return '2'; }
         case KeyCode.Three: { return '3'; }
