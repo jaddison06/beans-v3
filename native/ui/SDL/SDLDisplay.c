@@ -58,6 +58,20 @@ void SDDestroy(SDLDisplay* self)
     free(self);
 }
 
+void SDSetClip(SDLDisplay* self, int x, int y, int w, int h) {
+    SDL_Rect clip = {
+        x: y,
+        y: y,
+        w: w,
+        h: h
+    };
+    SDL_RenderSetClipRect(self->renderer, &clip);
+}
+
+void SDResetClip(SDLDisplay* self) {
+    SDL_RenderSetClipRect(self->renderer, NULL);
+}
+
 void SDSetColour(SDLDisplay* self, int r, int g, int b, int a)
 {
     SDL_SetRenderDrawColor(self->renderer, r, g, b, a);

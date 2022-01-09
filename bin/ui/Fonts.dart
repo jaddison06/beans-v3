@@ -39,7 +39,8 @@ class Fonts {
     _families.clear();
   }
 
-  _FontFamily operator[](String familyName) {
+  _FontFamily operator[](String? familyName) {
+    familyName ??= 'res/Menlo Regular.ttf';
     if (!_families.containsKey(familyName)) {
       _families[familyName] = _FontFamily(familyName);
     }

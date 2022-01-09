@@ -8,6 +8,9 @@ abstract class Display {
   void Destroy();
   void Flush();
 
+  void SetClip(V2 pos, V2 size);
+  void ResetClip();
+
   void DrawPoint(V2 pos, Colour col);
   void DrawLine(V2 a, V2 b, Colour col);
   void DrawRect(V2 pos, V2 size, Colour col);

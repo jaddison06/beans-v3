@@ -23,6 +23,11 @@ class SDLDisplayRaw {
 
     void SDFlush()
 
+    @Show(cSetClip)
+    void SDSetClip(int x, int y, int w, int h)
+
+    void SDResetClip()
+
     @Show(cDrawPoint)
     void SDDrawPoint(int x, int y, int r, int g, int b, int a)
     @Show(cDrawLine)

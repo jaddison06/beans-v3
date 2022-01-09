@@ -5,6 +5,9 @@ class V2 {
   final int x, y;
   V2(this.x, this.y);
 
+  @override
+  String toString() => 'V2 ($x, $y)';
+
   V2 operator+(Object other) {
     // using if instead of switch so we get automatic type promotion
     if (other is V2) {

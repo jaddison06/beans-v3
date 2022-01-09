@@ -10,7 +10,7 @@ import 'UIBase.dart';
 class BeansUI {
   final Display _display = SDLDisplay('beans');
   final Event _event = SDLEvent();
-  Renderable root = UIBase();
+  Renderable base = UIBase();
 
   var _quit = false;
 
@@ -37,7 +37,7 @@ class BeansUI {
   }
 
   void _frame() {
-    root.render(
+    base.render(
       _display,
       V2.origin(),
       _display.size

@@ -490,6 +490,14 @@ typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDGetSize_sig = void Function(
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_native_sig = Void Function(Pointer<Void>);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_sig = void Function(Pointer<Void>);
 
+// void SDSetClip(void* struct_ptr, int x, int y, int w, int h)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDSetClip_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDSetClip_sig = void Function(Pointer<Void>, int, int, int, int);
+
+// void SDResetClip(void* struct_ptr)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDResetClip_native_sig = Void Function(Pointer<Void>);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDResetClip_sig = void Function(Pointer<Void>);
+
 // void SDDrawPoint(void* struct_ptr, int x, int y, int r, int g, int b, int a)
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_sig = void Function(Pointer<Void>, int, int, int, int, int, int);
@@ -526,6 +534,8 @@ class SDLDisplayRaw {
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDestroy_sig? _SDDestroy;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDGetSize_sig? _SDGetSize;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_sig? _SDFlush;
+    static _libSDLDisplay_class_SDLDisplayRaw_method_SDSetClip_sig? _SDSetClip;
+    static _libSDLDisplay_class_SDLDisplayRaw_method_SDResetClip_sig? _SDResetClip;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_sig? _SDDrawPoint;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig? _SDDrawLine;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig? _SDDrawRect;
@@ -539,6 +549,8 @@ class SDLDisplayRaw {
             _SDDestroy == null ||
             _SDGetSize == null ||
             _SDFlush == null ||
+            _SDSetClip == null ||
+            _SDResetClip == null ||
             _SDDrawPoint == null ||
             _SDDrawLine == null ||
             _SDDrawRect == null ||
@@ -552,6 +564,8 @@ class SDLDisplayRaw {
             _SDDestroy = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDestroy_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDestroy_sig>('SDDestroy');
             _SDGetSize = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDGetSize_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDGetSize_sig>('SDGetSize');
             _SDFlush = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDFlush_sig>('SDFlush');
+            _SDSetClip = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDSetClip_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDSetClip_sig>('SDSetClip');
+            _SDResetClip = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDResetClip_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDResetClip_sig>('SDResetClip');
             _SDDrawPoint = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawPoint_sig>('SDDrawPoint');
             _SDDrawLine = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig>('SDDrawLine');
             _SDDrawRect = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig>('SDDrawRect');
@@ -594,6 +608,16 @@ class SDLDisplayRaw {
     void Flush() {
         _validatePointer('SDFlush');
         return _SDFlush!(structPointer);
+    }
+
+    void cSetClip(int x, int y, int w, int h) {
+        _validatePointer('cSetClip');
+        return _SDSetClip!(structPointer, x, y, w, h);
+    }
+
+    void ResetClip() {
+        _validatePointer('SDResetClip');
+        return _SDResetClip!(structPointer);
     }
 
     void cDrawPoint(int x, int y, int r, int g, int b, int a) {

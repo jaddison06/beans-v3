@@ -11,6 +11,11 @@ class SDLDisplay extends SDLDisplayRaw implements Display {
   SDLDisplay(String title) : super(title);
 
   @override
+  void SetClip(V2 pos, V2 size) {
+    cSetClip(pos.x, pos.y, size.x, size.y);
+  }
+
+  @override
   void DrawPoint(V2 pos, Colour col) {
     cDrawPoint(pos.x, pos.y, col.r, col.g, col.b, col.a);
   }

@@ -1,14 +1,14 @@
 import 'Display.dart';
 import 'V2.dart';
+import 'Fonts.dart';
+import 'Colour.dart';
+
+import 'Renderable.dart';
+import 'Display.dart';
+import 'V2.dart';
 
 abstract class BeansWindow {
-  /// Size in wm blocks **NOT** pixels
-  V2 get size;
-  /// Pos in wm blocks **NOT** pixels
-  V2 get pos;
   String get title;
-
-  void render(Display display, int blockSize) {
-    
-  }
+  /// [pos] and [size] are in px!!!
+  void render(Display display, V2 pos, V2 size, int blockSize);
 }
