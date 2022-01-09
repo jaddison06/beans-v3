@@ -23,7 +23,6 @@ class CommandLine {
 
   void addCommand(String command) {
     if (isExecuted) {
-      isExecuted = false;
       clear();
     }
     if (commandNames.containsKey(command) || command.isNumeric) {
@@ -41,6 +40,7 @@ class CommandLine {
 
   void clear() {
     _commands.clear();
+    isExecuted = false;
   }
 
   List<String> _tokens() {
@@ -106,6 +106,7 @@ class CommandLine {
   // thru -> number ["thru" number]
   // action -> verb [number]
   void execute() {
+    if (isExecuted) return;
     String selectionType;
     List<int> selection;
     int selectionLen;

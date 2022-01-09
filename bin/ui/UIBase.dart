@@ -58,21 +58,24 @@ class UIBase extends Renderable {
     return constraints;
   }
 
+  V2 _windowPos(_WindowInfo win, V2 pos, V2 constraints) => pos + V2(0, topAreaHeight) + (win.pos * _getBlockSize(constraints));
+
   _WindowInfo? _titlebarAt(V2 pos, V2 constraints, V2 hit) {
     final blockSize = _getBlockSize(constraints);
     for (var win in _windows) {
       if (hit.containedBy(
-        win.pos * blockSize,
+        _windowPos(win, pos, constraints),
         V2(win.size.x * blockSize.x, blockSize.y)
       )) return win;
     }
   }
 
   _WindowInfo? _windowAt(V2 pos, V2 constraints, V2 hit) {
+    final blockSize = _getBlockSize(constraints);
     for (var win in _windows) {
       if (hit.containedBy(
-        (win.pos + 1) * _getBlockSize(constraints),
-        (win.size - 1) * _getBlockSize(constraints)
+        _windowPos(win, pos, constraints) + V2(0, blockSize.y),
+        (win.size - 1) * blockSize
       )) return win;
     }
   }
@@ -121,7 +124,7 @@ class UIBase extends Renderable {
     display.ResetClip();
 
     for (var window in _windows) {
-      final winPos = windowAreaPos + window.pos * blockSize;
+      final winPos = _windowPos(window, pos, constraints);
       final winSize = window.size * blockSize;
       final contentPos = winPos + V2(0, blockSize.y);
       final contentSize = winSize - V2(0, blockSize.y);
@@ -136,28 +139,44 @@ class UIBase extends Renderable {
     }
   }
 
+  void _winOnEvent(_WindowInfo win, Event event, V2 pos, V2 constraints) {
+    win.win.onEvent(_windowPos(win, pos, constraints) + V2(0, _getBlockSize(constraints).y), event);
+  }
+
   @override
   void onEvent(V2 pos, V2 constraints, Event event) {
-    if (event.type == EventType.KeyDown && event.key == KeyCode.Escape) BeansEngine.quit();
+    if (event.type == EventType.Key && event.key == Key.Escape) BeansEngine.quit();
     switch (event.type) {
-      case EventType.KeyDown: {
-        if (event.key == KeyCode.Escape) {
-          BeansEngine.quit();
-        } else if (_keyboardFocus != null) {
-          _keyboardFocus!.win.onEvent(pos, event);
-        } else {
-          if (event.key == KeyCode.Backspace) {
+      case EventType.Key: {
+        if (_keyboardFocus != null) {
+          _winOnEvent(_keyboardFocus!, event, pos, constraints);
+          break;
+        }
+        print(event.key.name);
+        switch (event.key) {
+          case Key.Backspace: {
             if (event.modifiers.contains(Modifier.Shift)) {
               BeansEngine.commandLine.clear();
             } else {
               BeansEngine.commandLine.backspace();
             }
-          } else if (event.key == KeyCode.Return) {
-            BeansEngine.commandLine.execute();
-          } else {
-            BeansEngine.commandLine.addCommand(KeyCodeToString(event.key));
+            break;
           }
+          case Key.Return: {
+            BeansEngine.commandLine.execute();
+            break;
+          }
+          default: {}
         }
+        break;
+      }
+      case EventType.Text: {
+        if (_keyboardFocus != null) {
+          _winOnEvent(_keyboardFocus!, event, pos, constraints);
+          break;
+        }
+        print(event.text);
+        BeansEngine.commandLine.addCommand(event.text);
         break;
       }
       default: {}

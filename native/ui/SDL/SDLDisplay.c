@@ -31,14 +31,18 @@ SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode)
     return self;
 }
 
-SDLDisplay* SDInit(const char* title)
+SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen)
 {
     SDLDisplay* out = malloc(sizeof(SDLDisplay));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         return LogSDLError(out, SDLInitErrorCode_InitVideo_Fail);
     
-    out->window = SDL_CreateWindow(title, 0, 0, 100, 100, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    uint32_t flags = 0;
+    if (fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else flags |= SDL_WINDOW_RESIZABLE;
+
+    out->window = SDL_CreateWindow(title, 40, 40, 200, 200, flags);
     if (out->window == NULL)
         return LogSDLError(out, SDLInitErrorCode_CreateWindow_Fail);
 
@@ -46,6 +50,8 @@ SDLDisplay* SDInit(const char* title)
     if (out->renderer == NULL)
         return LogSDLError(out, SDLInitErrorCode_CreateRenderer_Fail);
     
+    SDL_StartTextInput();
+
     out->errorCode = SDLInitErrorCode_Success;
     return out;
 }

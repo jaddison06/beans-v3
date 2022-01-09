@@ -9,7 +9,7 @@ import 'UIBase.dart';
 import '../core/BeansEngine.dart';
 
 class BeansUI {
-  final Display _display = SDLDisplay('beans');
+  final Display _display = SDLDisplay('beans', fullscreen: false);
   final Event _event = SDLEvent();
   Renderable base = UIBase();
 

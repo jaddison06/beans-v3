@@ -10,7 +10,9 @@ class SDLEventRaw {
 
     void SEGetPos(int* x, int* y)
     @Getter(key)
-    KeyCode SEGetKey()
+    Key SEGetKey()
+    @Getter(text)
+    char* SEGetText()
     @Getter(mouseButton)
     MouseButton SEGetMouseButton()
     @Getter(type)

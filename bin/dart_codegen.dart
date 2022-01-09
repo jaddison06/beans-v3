@@ -126,8 +126,8 @@ class E131 {
 enum EventType {
     None,
     Quit,
-    KeyDown,
-    KeyUp,
+    Key,
+    Text,
     MouseMove,
     MouseDown,
     MouseUp,
@@ -141,8 +141,8 @@ String EventTypeToString(EventType val) {
     switch (val) {
         case EventType.None: { return 'None'; }
         case EventType.Quit: { return 'Quit'; }
-        case EventType.KeyDown: { return 'KeyDown'; }
-        case EventType.KeyUp: { return 'KeyUp'; }
+        case EventType.Key: { return 'Key'; }
+        case EventType.Text: { return 'Text'; }
         case EventType.MouseMove: { return 'MouseMove'; }
         case EventType.MouseDown: { return 'MouseDown'; }
         case EventType.MouseUp: { return 'MouseUp'; }
@@ -188,80 +188,12 @@ String ModifierToString(Modifier val) {
     }
 }
 
-enum KeyCode {
-    a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g,
-    h,
-    i,
-    j,
-    k,
-    l,
-    m,
-    n,
-    o,
-    p,
-    q,
-    r,
-    s,
-    t,
-    u,
-    v,
-    w,
-    x,
-    y,
-    z,
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Zero,
-    Exclamation,
-    Question,
-    DoubleQuote,
-    SingleQuote,
-    Pound,
-    Dollar,
-    Percent,
-    Caret,
-    Ampersand,
-    Asterisk,
-    Hyphen,
-    Underscore,
-    Equals,
-    Plus,
-    Pipe,
-    Semicolon,
-    Colon,
-    At,
-    Tilde,
-    Hash,
-    Backtick,
-    ForwardSlash,
-    BackSlash,
-    NormalBracketL,
-    NormalBracketR,
-    SquareBracketL,
-    SquareBracketR,
-    CurlyBraceL,
-    CurlyBraceR,
-    SmallerThan,
-    GreaterThan,
+enum Key {
     Return,
     Escape,
     Backspace,
     Delete,
     Tab,
-    Space,
     Insert,
     Home,
     End,
@@ -271,175 +203,41 @@ enum KeyCode {
     ArrowLeft,
     ArrowDown,
     ArrowUp,
-    NumpadDivide,
-    NumpadMultiply,
-    NumpadSubtract,
-    NumpadAdd,
-    NumpadEquals,
-    NumpadEnter,
-    NumpadDecimalPoint,
-    NumpadOne,
-    NumpadTwo,
-    NumpadThree,
-    NumpadFour,
-    NumpadFive,
-    NumpadSix,
-    NumpadSeven,
-    NumpadEight,
-    NumpadNine,
-    NumpadZero,
-    Function_F1,
-    Function_F2,
-    Function_F3,
-    Function_F4,
-    Function_F5,
-    Function_F6,
-    Function_F7,
-    Function_F8,
-    Function_F9,
-    Function_F10,
-    Function_F11,
-    Function_F12,
     LControl,
     RControl,
     LShift,
     RShift,
     LAlt,
     RAlt,
-    AudioNext,
-    AudioPrev,
-    AudioStop,
-    AudioPlay,
     Unknown,
 }
 
-KeyCode KeyCodeFromInt(int val) => KeyCode.values[val];
-int KeyCodeToInt(KeyCode val) => KeyCode.values.indexOf(val);
+Key KeyFromInt(int val) => Key.values[val];
+int KeyToInt(Key val) => Key.values.indexOf(val);
 
-String KeyCodeToString(KeyCode val) {
+String KeyToString(Key val) {
     switch (val) {
-        case KeyCode.a: { return 'a'; }
-        case KeyCode.b: { return 'b'; }
-        case KeyCode.c: { return 'c'; }
-        case KeyCode.d: { return 'd'; }
-        case KeyCode.e: { return 'e'; }
-        case KeyCode.f: { return 'f'; }
-        case KeyCode.g: { return 'g'; }
-        case KeyCode.h: { return 'h'; }
-        case KeyCode.i: { return 'i'; }
-        case KeyCode.j: { return 'j'; }
-        case KeyCode.k: { return 'k'; }
-        case KeyCode.l: { return 'l'; }
-        case KeyCode.m: { return 'm'; }
-        case KeyCode.n: { return 'n'; }
-        case KeyCode.o: { return 'o'; }
-        case KeyCode.p: { return 'p'; }
-        case KeyCode.q: { return 'q'; }
-        case KeyCode.r: { return 'r'; }
-        case KeyCode.s: { return 's'; }
-        case KeyCode.t: { return 't'; }
-        case KeyCode.u: { return 'u'; }
-        case KeyCode.v: { return 'v'; }
-        case KeyCode.w: { return 'w'; }
-        case KeyCode.x: { return 'x'; }
-        case KeyCode.y: { return 'y'; }
-        case KeyCode.z: { return 'z'; }
-        case KeyCode.One: { return '1'; }
-        case KeyCode.Two: { return '2'; }
-        case KeyCode.Three: { return '3'; }
-        case KeyCode.Four: { return '4'; }
-        case KeyCode.Five: { return '5'; }
-        case KeyCode.Six: { return '6'; }
-        case KeyCode.Seven: { return '7'; }
-        case KeyCode.Eight: { return '8'; }
-        case KeyCode.Nine: { return '9'; }
-        case KeyCode.Zero: { return '0'; }
-        case KeyCode.Exclamation: { return '!'; }
-        case KeyCode.Question: { return '?'; }
-        case KeyCode.DoubleQuote: { return '"'; }
-        case KeyCode.SingleQuote: { return '\''; }
-        case KeyCode.Pound: { return '£'; }
-        case KeyCode.Dollar: { return '\$'; }
-        case KeyCode.Percent: { return '%'; }
-        case KeyCode.Caret: { return '^'; }
-        case KeyCode.Ampersand: { return '&'; }
-        case KeyCode.Asterisk: { return '*'; }
-        case KeyCode.Hyphen: { return '-'; }
-        case KeyCode.Underscore: { return '_'; }
-        case KeyCode.Equals: { return '='; }
-        case KeyCode.Plus: { return '+'; }
-        case KeyCode.Pipe: { return '|'; }
-        case KeyCode.Semicolon: { return ';'; }
-        case KeyCode.Colon: { return ':'; }
-        case KeyCode.At: { return '@'; }
-        case KeyCode.Tilde: { return '~'; }
-        case KeyCode.Hash: { return '#'; }
-        case KeyCode.Backtick: { return '`'; }
-        case KeyCode.ForwardSlash: { return '/'; }
-        case KeyCode.BackSlash: { return '\\'; }
-        case KeyCode.NormalBracketL: { return '('; }
-        case KeyCode.NormalBracketR: { return ')'; }
-        case KeyCode.SquareBracketL: { return '['; }
-        case KeyCode.SquareBracketR: { return ']'; }
-        case KeyCode.CurlyBraceL: { return '{'; }
-        case KeyCode.CurlyBraceR: { return '}'; }
-        case KeyCode.SmallerThan: { return '<'; }
-        case KeyCode.GreaterThan: { return '>'; }
-        case KeyCode.Return: { return 'Return'; }
-        case KeyCode.Escape: { return 'Escape'; }
-        case KeyCode.Backspace: { return 'Backspace'; }
-        case KeyCode.Delete: { return 'Delete'; }
-        case KeyCode.Tab: { return 'Tab'; }
-        case KeyCode.Space: { return 'Space'; }
-        case KeyCode.Insert: { return 'Insert'; }
-        case KeyCode.Home: { return 'Home'; }
-        case KeyCode.End: { return 'End'; }
-        case KeyCode.PageUp: { return 'PageUp'; }
-        case KeyCode.PageDown: { return 'PageDown'; }
-        case KeyCode.ArrowRight: { return 'ArrowRight'; }
-        case KeyCode.ArrowLeft: { return 'ArrowLeft'; }
-        case KeyCode.ArrowDown: { return 'ArrowDown'; }
-        case KeyCode.ArrowUp: { return 'ArrowUp'; }
-        case KeyCode.NumpadDivide: { return 'NumpadDivide'; }
-        case KeyCode.NumpadMultiply: { return 'NumpadMultiply'; }
-        case KeyCode.NumpadSubtract: { return 'NumpadSubtract'; }
-        case KeyCode.NumpadAdd: { return 'NumpadAdd'; }
-        case KeyCode.NumpadEquals: { return 'NumpadEquals'; }
-        case KeyCode.NumpadEnter: { return 'NumpadEnter'; }
-        case KeyCode.NumpadDecimalPoint: { return 'NumpadDecimalPoint'; }
-        case KeyCode.NumpadOne: { return '1'; }
-        case KeyCode.NumpadTwo: { return '2'; }
-        case KeyCode.NumpadThree: { return '3'; }
-        case KeyCode.NumpadFour: { return '4'; }
-        case KeyCode.NumpadFive: { return '5'; }
-        case KeyCode.NumpadSix: { return '6'; }
-        case KeyCode.NumpadSeven: { return '7'; }
-        case KeyCode.NumpadEight: { return '8'; }
-        case KeyCode.NumpadNine: { return '9'; }
-        case KeyCode.NumpadZero: { return '0'; }
-        case KeyCode.Function_F1: { return 'F1'; }
-        case KeyCode.Function_F2: { return 'F2'; }
-        case KeyCode.Function_F3: { return 'F3'; }
-        case KeyCode.Function_F4: { return 'F4'; }
-        case KeyCode.Function_F5: { return 'F5'; }
-        case KeyCode.Function_F6: { return 'F6'; }
-        case KeyCode.Function_F7: { return 'F7'; }
-        case KeyCode.Function_F8: { return 'F8'; }
-        case KeyCode.Function_F9: { return 'F9'; }
-        case KeyCode.Function_F10: { return 'F10'; }
-        case KeyCode.Function_F11: { return 'F11'; }
-        case KeyCode.Function_F12: { return 'F12'; }
-        case KeyCode.LControl: { return 'LControl'; }
-        case KeyCode.RControl: { return 'RControl'; }
-        case KeyCode.LShift: { return 'LShift'; }
-        case KeyCode.RShift: { return 'RShift'; }
-        case KeyCode.LAlt: { return 'LAlt'; }
-        case KeyCode.RAlt: { return 'RAlt'; }
-        case KeyCode.AudioNext: { return 'AudioNext'; }
-        case KeyCode.AudioPrev: { return 'AudioPrev'; }
-        case KeyCode.AudioStop: { return 'AudioStop'; }
-        case KeyCode.AudioPlay: { return 'AudioPlay'; }
-        case KeyCode.Unknown: { return 'Unknown'; }
+        case Key.Return: { return 'Return'; }
+        case Key.Escape: { return 'Escape'; }
+        case Key.Backspace: { return 'Backspace'; }
+        case Key.Delete: { return 'Delete'; }
+        case Key.Tab: { return 'Tab'; }
+        case Key.Insert: { return 'Insert'; }
+        case Key.Home: { return 'Home'; }
+        case Key.End: { return 'End'; }
+        case Key.PageUp: { return 'PageUp'; }
+        case Key.PageDown: { return 'PageDown'; }
+        case Key.ArrowRight: { return 'ArrowRight'; }
+        case Key.ArrowLeft: { return 'ArrowLeft'; }
+        case Key.ArrowDown: { return 'ArrowDown'; }
+        case Key.ArrowUp: { return 'ArrowUp'; }
+        case Key.LControl: { return 'LControl'; }
+        case Key.RControl: { return 'RControl'; }
+        case Key.LShift: { return 'LShift'; }
+        case Key.RShift: { return 'RShift'; }
+        case Key.LAlt: { return 'LAlt'; }
+        case Key.RAlt: { return 'RAlt'; }
+        case Key.Unknown: { return 'Unknown'; }
     }
 }
 
@@ -470,9 +268,9 @@ String SDLInitErrorCodeToString(SDLInitErrorCode val) {
 
 // ----------SDLDISPLAYRAW----------
 
-// void* SDInit(char* title)
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_native_sig = Pointer<Void> Function(Pointer<Utf8>);
-typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_sig = Pointer<Void> Function(Pointer<Utf8>);
+// void* SDInit(char* title, bool fullscreen)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_native_sig = Pointer<Void> Function(Pointer<Utf8>, Uint8);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_sig = Pointer<Void> Function(Pointer<Utf8>, int);
 
 // SDLInitErrorCode SDGetErrorCode(void* struct_ptr)
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDGetErrorCode_native_sig = Int32 Function(Pointer<Void>);
@@ -574,9 +372,9 @@ class SDLDisplayRaw {
         }
     }
 
-    SDLDisplayRaw(String title) {
+    SDLDisplayRaw(String title, bool fullscreen) {
         _initRefs();
-        structPointer = _SDInit!(title.toNativeUtf8());
+        structPointer = _SDInit!(title.toNativeUtf8(), fullscreen ? 1 : 0);
     }
 
     SDLDisplayRaw.fromPointer(Pointer<Void> ptr) {
@@ -665,9 +463,13 @@ typedef _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig = void Function(Poin
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 
-// KeyCode SEGetKey(void* struct_ptr)
+// Key SEGetKey(void* struct_ptr)
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig = Int32 Function(Pointer<Void>);
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig = int Function(Pointer<Void>);
+
+// char* SEGetText(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig = Pointer<Utf8> Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig = Pointer<Utf8> Function(Pointer<Void>);
 
 // MouseButton SEGetMouseButton(void* struct_ptr)
 typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig = Int32 Function(Pointer<Void>);
@@ -712,6 +514,7 @@ class SDLEventRaw {
     static _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig? _SEDestroy;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig? _SEGetPos;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig? _SEGetKey;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig? _SEGetText;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig? _SEGetMouseButton;
     static _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig? _SEGetType;
     static _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig? _SEHasShift;
@@ -726,6 +529,7 @@ class SDLEventRaw {
             _SEDestroy == null ||
             _SEGetPos == null ||
             _SEGetKey == null ||
+            _SEGetText == null ||
             _SEGetMouseButton == null ||
             _SEGetType == null ||
             _SEHasShift == null ||
@@ -740,6 +544,7 @@ class SDLEventRaw {
             _SEDestroy = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig>('SEDestroy');
             _SEGetPos = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig>('SEGetPos');
             _SEGetKey = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig>('SEGetKey');
+            _SEGetText = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig>('SEGetText');
             _SEGetMouseButton = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig>('SEGetMouseButton');
             _SEGetType = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig>('SEGetType');
             _SEHasShift = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig>('SEHasShift');
@@ -776,9 +581,14 @@ class SDLEventRaw {
         return _SEGetPos!(structPointer, x, y);
     }
 
-    KeyCode get key {
+    Key get key {
         _validatePointer('key');
-        return KeyCodeFromInt(_SEGetKey!(structPointer));
+        return KeyFromInt(_SEGetKey!(structPointer));
+    }
+
+    String get text {
+        _validatePointer('text');
+        return (_SEGetText!(structPointer)).toDartString();
     }
 
     MouseButton get mouseButton {

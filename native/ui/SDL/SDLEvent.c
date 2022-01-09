@@ -1,5 +1,7 @@
 #include "native/c_codegen.h"
 #include <SDL2/SDL.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct
 {
@@ -8,8 +10,9 @@ typedef struct
     EventType type;
 
     int x, y;
-    KeyCode key;
+    Key key;
     uint16_t modifiers;
+    char* text;
     MouseButton mouseButton;
 } SDLEvent;
 
@@ -18,12 +21,14 @@ SDLEvent* SEInit()
     SDLEvent* out = malloc(sizeof(SDLEvent));
 
     out->type = EventType_None;
+    out->text = malloc(32);
 
     return out;
 }
 
 void SEDestroy(SDLEvent* event)
 {
+    free(event->text);
     free(event);
 }
 
@@ -33,9 +38,18 @@ void SEGetPos(SDLEvent* event, int* x, int* y)
     *y = event->y;
 }
 
-KeyCode SEGetKey(SDLEvent* event)
+Key SEGetKey(SDLEvent* event)
 {
     return event->key;
+}
+
+char* SEGetText(SDLEvent* event)
+{
+    return event->text;
+}
+
+uint16_t SEGetModifiers(SDLEvent* event) {
+    return event->modifiers;
 }
 
 BEANS_BOOL HasMod(SDLEvent* self, SDL_Keymod mod) {
@@ -79,141 +93,35 @@ MouseButton TranslateMouseButton(SDLEvent* event)
     }
 }
 
-KeyCode TranslateKey(SDLEvent* event)
+Key TranslateKey(SDLEvent* event)
 {
     switch (event->raw.key.keysym.sym)
     {
-        case SDLK_a: return KeyCode_a;
-        case SDLK_b: return KeyCode_b;
-        case SDLK_c: return KeyCode_c;
-        case SDLK_d: return KeyCode_d;
-        case SDLK_e: return KeyCode_e;
-        case SDLK_f: return KeyCode_f;
-        case SDLK_g: return KeyCode_g;
-        case SDLK_h: return KeyCode_h;
-        case SDLK_i: return KeyCode_i;
-        case SDLK_j: return KeyCode_j;
-        case SDLK_k: return KeyCode_k;
-        case SDLK_l: return KeyCode_l;
-        case SDLK_m: return KeyCode_m;
-        case SDLK_n: return KeyCode_n;
-        case SDLK_o: return KeyCode_o;
-        case SDLK_p: return KeyCode_p;
-        case SDLK_q: return KeyCode_q;
-        case SDLK_r: return KeyCode_r;
-        case SDLK_s: return KeyCode_s;
-        case SDLK_t: return KeyCode_t;
-        case SDLK_u: return KeyCode_u;
-        case SDLK_v: return KeyCode_v;
-        case SDLK_w: return KeyCode_w;
-        case SDLK_x: return KeyCode_x;
-        case SDLK_y: return KeyCode_y;
-        case SDLK_z: return KeyCode_z;
+        case SDLK_RETURN:    return Key_Return;
+        case SDLK_ESCAPE:    return Key_Escape;
+        case SDLK_BACKSPACE: return Key_Backspace;
+        case SDLK_DELETE:    return Key_Delete;
+        case SDLK_TAB:       return Key_Tab;
 
-        case SDLK_1: return KeyCode_One;
-        case SDLK_2: return KeyCode_Two;
-        case SDLK_3: return KeyCode_Three;
-        case SDLK_4: return KeyCode_Four;
-        case SDLK_5: return KeyCode_Five;
-        case SDLK_6: return KeyCode_Six;
-        case SDLK_7: return KeyCode_Seven;
-        case SDLK_8: return KeyCode_Eight;
-        case SDLK_9: return KeyCode_Nine;
-        case SDLK_0: return KeyCode_Zero;
+        case SDLK_INSERT:   return Key_Insert;
+        case SDLK_HOME:     return Key_Home;
+        case SDLK_END:      return Key_End;
+        case SDLK_PAGEUP:   return Key_PageUp;
+        case SDLK_PAGEDOWN: return Key_PageDown;
 
-        case SDLK_EXCLAIM:  return KeyCode_Exclamation;
-        case SDLK_QUESTION: return KeyCode_Question;
-        case SDLK_QUOTEDBL: return KeyCode_DoubleQuote;
-        case SDLK_QUOTE:    return KeyCode_SingleQuote;
-        // todo: pound?
-        case SDLK_DOLLAR:     return KeyCode_Dollar;
-        case SDLK_PERCENT:    return KeyCode_Percent;
-        case SDLK_CARET:      return KeyCode_Caret;
-        case SDLK_AMPERSAND:  return KeyCode_Ampersand;
-        case SDLK_ASTERISK:   return KeyCode_Asterisk;
-        case SDLK_MINUS:      return KeyCode_Hyphen;
-        case SDLK_UNDERSCORE: return KeyCode_Underscore;
-        case SDLK_EQUALS:     return KeyCode_Equals;
-        case SDLK_PLUS:       return KeyCode_Plus;
-        // todo: pipe
-        case SDLK_SEMICOLON: return KeyCode_Semicolon;
-        case SDLK_COLON:     return KeyCode_Colon;
-        case SDLK_AT:        return KeyCode_At;
-        // todo: tilde
-        case SDLK_HASH:      return KeyCode_Hash;
-        case SDLK_BACKQUOTE: return KeyCode_Backtick;
+        case SDLK_RIGHT: return Key_ArrowRight;
+        case SDLK_LEFT:  return Key_ArrowLeft;
+        case SDLK_DOWN:  return Key_ArrowDown;
+        case SDLK_UP:    return Key_ArrowUp;
 
-        case SDLK_LEFTPAREN:    return KeyCode_NormalBracketL;
-        case SDLK_RIGHTPAREN:   return KeyCode_NormalBracketR;
-        case SDLK_LEFTBRACKET:  return KeyCode_SquareBracketL;
-        case SDLK_RIGHTBRACKET: return KeyCode_SquareBracketR;
-        // todo: braces
-        case SDLK_LESS:         return KeyCode_SmallerThan;
-        case SDLK_GREATER:      return KeyCode_GreaterThan;
-
-        case SDLK_RETURN:    return KeyCode_Return;
-        case SDLK_ESCAPE:    return KeyCode_Escape;
-        case SDLK_BACKSPACE: return KeyCode_Backspace;
-        case SDLK_DELETE:    return KeyCode_Delete;
-        case SDLK_TAB:       return KeyCode_Tab;
-        case SDLK_SPACE:     return KeyCode_Space;
-
-        case SDLK_INSERT:   return KeyCode_Insert;
-        case SDLK_HOME:     return KeyCode_Home;
-        case SDLK_END:      return KeyCode_End;
-        case SDLK_PAGEUP:   return KeyCode_PageUp;
-        case SDLK_PAGEDOWN: return KeyCode_PageDown;
-
-        case SDLK_RIGHT: return KeyCode_ArrowRight;
-        case SDLK_LEFT:  return KeyCode_ArrowLeft;
-        case SDLK_DOWN:  return KeyCode_ArrowDown;
-        case SDLK_UP:    return KeyCode_ArrowUp;
-
-        case SDLK_KP_DIVIDE:   return KeyCode_NumpadDivide;
-        case SDLK_KP_MULTIPLY: return KeyCode_NumpadMultiply;
-        case SDLK_KP_MINUS:    return KeyCode_NumpadSubtract;
-        case SDLK_KP_PLUS:     return KeyCode_NumpadAdd;
-        case SDLK_KP_EQUALS:   return KeyCode_NumpadEquals;
-        case SDLK_KP_ENTER:    return KeyCode_NumpadEnter;
-        case SDLK_KP_PERIOD:   return KeyCode_NumpadDecimalPoint;
+        case SDLK_LCTRL:  return Key_LControl;
+        case SDLK_RCTRL:  return Key_RControl;
+        case SDLK_LSHIFT: return Key_LShift;
+        case SDLK_RSHIFT: return Key_RShift;
+        case SDLK_LALT:   return Key_LAlt;
+        case SDLK_RALT:   return Key_RAlt;
         
-        case SDLK_KP_1: return KeyCode_NumpadOne;
-        case SDLK_KP_2: return KeyCode_NumpadTwo;
-        case SDLK_KP_3: return KeyCode_NumpadThree;
-        case SDLK_KP_4: return KeyCode_NumpadFour;
-        case SDLK_KP_5: return KeyCode_NumpadFive;
-        case SDLK_KP_6: return KeyCode_NumpadSix;
-        case SDLK_KP_7: return KeyCode_NumpadSeven;
-        case SDLK_KP_8: return KeyCode_NumpadEight;
-        case SDLK_KP_9: return KeyCode_NumpadNine;
-        case SDLK_KP_0: return KeyCode_NumpadZero;
-
-        case SDLK_F1:  return KeyCode_Function_F1;
-        case SDLK_F2:  return KeyCode_Function_F2;
-        case SDLK_F3:  return KeyCode_Function_F3;
-        case SDLK_F4:  return KeyCode_Function_F4;
-        case SDLK_F5:  return KeyCode_Function_F5;
-        case SDLK_F6:  return KeyCode_Function_F6;
-        case SDLK_F7:  return KeyCode_Function_F7;
-        case SDLK_F8:  return KeyCode_Function_F8;
-        case SDLK_F9:  return KeyCode_Function_F9;
-        case SDLK_F10: return KeyCode_Function_F10;
-        case SDLK_F11: return KeyCode_Function_F11;
-        case SDLK_F12: return KeyCode_Function_F12;
-
-        case SDLK_LCTRL:  return KeyCode_LControl;
-        case SDLK_RCTRL:  return KeyCode_RControl;
-        case SDLK_LSHIFT: return KeyCode_LShift;
-        case SDLK_RSHIFT: return KeyCode_RShift;
-        case SDLK_LALT:   return KeyCode_LAlt;
-        case SDLK_RALT:   return KeyCode_RAlt;
-
-        case SDLK_AUDIONEXT: return KeyCode_AudioNext;
-        case SDLK_AUDIOPREV: return KeyCode_AudioPrev;
-        case SDLK_AUDIOSTOP: return KeyCode_AudioStop;
-        case SDLK_AUDIOPLAY: return KeyCode_AudioPlay;
-        
-        default: return KeyCode_Unknown;
+        default: return Key_Unknown;
     }
 }
 
@@ -230,15 +138,15 @@ int SEPoll(SDLEvent* event)
         }
         case SDL_KEYDOWN:
         {
-            event->type = EventType_KeyDown;
+            event->type = EventType_Key;
             event->key = TranslateKey(event);
             event->modifiers = event->raw.key.keysym.mod;
             break;
         }
-        case SDL_KEYUP:
+        case SDL_TEXTINPUT:
         {
-            event->type = EventType_KeyUp;
-            event->key = TranslateKey(event);
+            event->type = EventType_Text;
+            strcpy(event->text, event->raw.text.text);
             break;
         }
         case SDL_MOUSEMOTION:

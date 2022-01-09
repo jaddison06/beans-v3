@@ -11,7 +11,7 @@ enum SDLInitErrorCode {
 @Prefix(SD)
 class SDLDisplayRaw {
     @Initializer()
-    void* SDInit(char* title)
+    void* SDInit(char* title, bool fullscreen)
 
     @Getter(errorCode)
     SDLInitErrorCode SDGetErrorCode()

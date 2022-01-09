@@ -4,7 +4,8 @@ import 'V2.dart';
 abstract class Event {
   EventType get type;
   V2 get pos;
-  KeyCode get key;
+  Key get key;
+  String get text;
   MouseButton get mouseButton;
   List<Modifier> get modifiers;
 
