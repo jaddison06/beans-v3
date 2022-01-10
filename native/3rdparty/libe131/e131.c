@@ -314,7 +314,7 @@ const char *e131_strerror(const e131_error_t error) {
 
 // Beans compatibility layer
 
-#include "native/c_codegen.h"
+#include "c_codegen.h"
 
 typedef struct {
   int sockfd;

@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
-#include "native/c_codegen.h"
+#include "c_codegen.h"
 
 typedef struct {
     SDL_Window* window;

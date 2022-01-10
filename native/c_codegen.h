@@ -6,6 +6,8 @@ typedef char BEANS_BOOL;
 #define TRUE 1
 #define FALSE 0
 
+#define BEANS_WINDOWS
+
 // ----------NATIVE\3RDPARTY\LIBE131\E131.GEN----------
 
 typedef enum {

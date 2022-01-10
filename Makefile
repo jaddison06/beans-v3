@@ -24,17 +24,17 @@ cloc-by-file:
 
 build/native\3rdparty\libe131/libe131.dll: native\3rdparty\libe131\e131.c
 	python codegen/fs_util.py mkdir build/native\3rdparty\libe131
-	gcc -shared -o build/native\3rdparty\libe131/libe131.dll -fPIC -I. native\3rdparty\libe131\e131.c -lws2_32
+	gcc -shared -o build/native\3rdparty\libe131/libe131.dll -fPIC -Inative native\3rdparty\libe131\e131.c -lws2_32
 
 build/native\ui\SDL/libSDLDisplay.dll: native\ui\SDL\SDLDisplay.c
 	python codegen/fs_util.py mkdir build/native\ui\SDL
-	gcc -shared -o build/native\ui\SDL/libSDLDisplay.dll -fPIC -I. native\ui\SDL\SDLDisplay.c -lSDL2 -lSDL2_ttf
+	gcc -shared -o build/native\ui\SDL/libSDLDisplay.dll -fPIC -Inative native\ui\SDL\SDLDisplay.c -lSDL2 -lSDL2_ttf
 
 build/native\ui\SDL/libSDLEvent.dll: native\ui\SDL\SDLEvent.c
 	python codegen/fs_util.py mkdir build/native\ui\SDL
-	gcc -shared -o build/native\ui\SDL/libSDLEvent.dll -fPIC -I. native\ui\SDL\SDLEvent.c -lSDL2
+	gcc -shared -o build/native\ui\SDL/libSDLEvent.dll -fPIC -Inative native\ui\SDL\SDLEvent.c -lSDL2
 
 build/native\ui\SDL/libSDLFont.dll: native\ui\SDL\SDLFont.c
 	python codegen/fs_util.py mkdir build/native\ui\SDL
-	gcc -shared -o build/native\ui\SDL/libSDLFont.dll -fPIC -I. native\ui\SDL\SDLFont.c -lSDL2_ttf
+	gcc -shared -o build/native\ui\SDL/libSDLFont.dll -fPIC -Inative native\ui\SDL\SDLFont.c -lSDL2_ttf
 

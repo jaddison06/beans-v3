@@ -24,7 +24,7 @@ def all_with_extension(directory: str, ext: str) -> list[str]:
 def main():
     parsed_files: list[ParsedGenFile] = []
     for gen_file in all_with_extension(
-        get_config(ConfigField.definition_search_path),
+        get_config(ConfigField.c_source_dir),
         get_config(ConfigField.definition_ext)
     ):
         parsed_files.append(

@@ -91,7 +91,13 @@ class UIBase extends Renderable {
     display.DrawText(Fonts()[null][25], DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
 
     // ---------- BOTTOM ----------
-    display.DrawText(Fonts()[null][20], BeansEngine.commandLine.toString(), bottomAreaPos + V2(10, 10), Colour.pink);
+    final font = Fonts()[null][20];
+    final commandLine = BeansEngine.commandLine.toString();
+    final error = BeansEngine.commandLine.error;
+    display.DrawText(font, commandLine, bottomAreaPos + V2(10, 10), Colour.pink);
+    if (error != null) {
+      display.DrawText(font, error, bottomAreaPos + V2(10, 10) + V2(font.TextSize(commandLine).x, 0), Colour.red);
+    }
 
     // ---------- WINDOWS ----------
 

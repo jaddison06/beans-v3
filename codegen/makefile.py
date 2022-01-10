@@ -31,7 +31,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
             if annotation.name == 'LinkWithLib':
                 link_libs.append(annotation.args[0])
 
-        command = f'{get_config(ConfigField.gcc)} -shared -o {lib_name} -fPIC -I. {file.name_no_ext()}.c'
+        command = f'{get_config(ConfigField.gcc)} -shared -o {lib_name} -fPIC -I{get_config(ConfigField.c_source_dir)} {file.name_no_ext()}.c'
         for lib in link_libs:
             command += f' -l{lib}'
 

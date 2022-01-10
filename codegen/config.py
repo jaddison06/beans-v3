@@ -6,7 +6,7 @@ from enum import Enum, auto
 
 class ConfigField(Enum):
     definition_ext = auto()
-    definition_search_path = auto()
+    c_source_dir = auto()
     dart_output_path = auto()
     c_output_path = auto()
     use_cloc = auto()
@@ -17,7 +17,7 @@ class ConfigField(Enum):
 
 DEFAULTS = {
     ConfigField.definition_ext: '.gen',
-    ConfigField.definition_search_path: 'native',
+    ConfigField.c_source_dir: 'native',
     ConfigField.dart_output_path: 'bin/dart_codegen.dart',
     ConfigField.c_output_path: 'native/c_codegen.h',
     ConfigField.use_cloc: True,

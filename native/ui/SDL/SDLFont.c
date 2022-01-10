@@ -1,5 +1,5 @@
 #include <SDL2/SDL_ttf.h>
-#include "native/c_codegen.h"
+#include "c_codegen.h"
 
 BEANS_BOOL SFInit() {
     return TTF_Init() == 0;

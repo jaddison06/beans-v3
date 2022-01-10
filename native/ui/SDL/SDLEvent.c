@@ -1,7 +1,7 @@
-#include "native/c_codegen.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <string.h>
+#include "c_codegen.h"
 
 typedef struct {
     SDL_Event raw;

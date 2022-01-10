@@ -1,5 +1,6 @@
 from codegen_types import *
 from banner import *
+from platform import system, uname
 
 def generate_enum(enum: CodegenEnum) -> str:
     out = f'typedef enum {{\n'
@@ -22,6 +23,17 @@ typedef char BEANS_BOOL;
 #define FALSE 0
 
 '''
+
+    match system():
+        case 'Windows': out += '#define BEANS_WINDOWS\n'
+        case 'Linux':   out += '#define BEANS_LINUX\n'
+        case 'Darwin':  out += '#define BEANS_MACOS\n'
+    
+    if system() == 'Linux' and 'microsoft' in uname()[3].lower():
+        out += '#define BEANS_WSL\n'
+    
+    out += '\n'
+
     for file in files:
         out += banner(file.name)
         for enum in file.enums:
