@@ -1,10 +1,8 @@
 import 'FixtureInfo.dart';
 import 'Parameter.dart';
 
-int home(Parameter parameter) {
-  switch (parameter) {
-    case Parameter.Intensity: return 0;
-  }
+int home(ParamInfo param) {
+  return param.min;
 }
 
 class Channel {
@@ -13,7 +11,7 @@ class Channel {
   final int address;
   final Map<Parameter, int> _values;
   Channel({required this.fixture, required this.universe, required this.address}) :
-    _values = { for (var param in fixture.addresses.keys) param: home(param) };
+    _values = { for (var param in fixture.params) param.param: home(param) };
   
   void _checkParam(Parameter param) {
     if (!_values.containsKey(param)) throw Exception("Fixture of type ${fixture.name} has no parameter '${param.name}'");
@@ -22,13 +20,14 @@ class Channel {
   List<int> toDmx() {
     final out = <int>[];
 
-    for (var address in fixture.addresses.entries.toList()..sort((a, b) => a.value.offset - b.value.offset)) {
-      final value = _values[address.key]!;
-      if (address.value.is16Bit) {
-        out.add(value & 0xFF00);
-        out.add(value & 0xFF);
+    for (var param in fixture.params) {
+      final value = _values[param.param]!;
+      final dmxValue = ((value - param.min) * (param.is16Bit ? 65535 : 255)) ~/ (param.max - param.min);
+      if (param.is16Bit) {
+        out.add(dmxValue & 0xFF00);
+        out.add(dmxValue & 0xFF);
       } else {
-        out.add(value);
+        out.add(dmxValue);
       }
     }
 
@@ -37,17 +36,11 @@ class Channel {
   
   void setValue(Parameter param, int value) {
     _checkParam(param);
-    if (value < 0) {
-      throw Exception('DMX value cannot be less than 0 (got $value)');
-    }
-    if (fixture.addresses[param]!.is16Bit) {
-      if (value > 65535) {
-        throw Exception('16-bit DMX value cannot be more than 65535 (got $value)');
-      }
-    } else {
-      if (value > 255) {
-        throw Exception('8-bit DMX value cannot be more than 255 (got $value)');
-      }
+    final info = fixture.getInfo(param);
+    if (value < info.min) {
+      throw Exception("Fixture '${fixture.name}' cannot have a ${param.name} less than ${info.min} (got $value)");
+    } else if (value > info.max) {
+      throw Exception("Fixture '${fixture.name}' cannot have a ${param.name} more than ${info.max} (got $value)");
     }
     _values[param] = value;
   }

@@ -1,6 +1,7 @@
 import 'DmxInterface.dart';
 import 'SacnInterface.dart';
 import 'Channel.dart';
+import 'package:collection/collection.dart';
 
 import 'FixtureInfo.dart';
 import 'Parameter.dart';
@@ -10,9 +11,13 @@ Channel testChannel(int addr) => Channel(
   address: addr,
   fixture: FixtureInfo(
     name: 'Test Fixture',
-    addresses: {
-      Parameter.Intensity: AddressInfo(1)
-    }
+    params: [
+      ParamInfo(
+        Parameter.Intensity,
+        min: 50,
+        max: 100,
+      )
+    ]
   )
 );
 
@@ -33,10 +38,9 @@ class DmxManager {
         if (!addresses.containsKey(channel.universe)) {
           addresses[channel.universe] = <int, int>{};
         }
-        final dmxData = channel.toDmx();
-        for (var i = 0; i < dmxData.length; i++) {
-          addresses[channel.universe]![channel.address + i] = dmxData[i];
-        }
+        channel.toDmx().forEachIndexed((i, data) {
+          addresses[channel.universe]![channel.address + i] = data;
+        });
       }
     return addresses;
   }

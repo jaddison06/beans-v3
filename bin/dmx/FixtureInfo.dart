@@ -1,16 +1,20 @@
 import 'Parameter.dart';
 
-class AddressInfo {
-  int offset;
+class ParamInfo {
+  Parameter param;
+  int min;
+  int max;
   bool is16Bit;
-  AddressInfo(this.offset, {this.is16Bit = false});
+  ParamInfo(this.param, {this.min = 0, this.max = 255, this.is16Bit = false});
 }
 
 class FixtureInfo {
   final String name;
-  final Map<Parameter, AddressInfo> addresses;
+  final List<ParamInfo> params;
 
-  int get addressCount => addresses.values.fold(0, (count, address) => address.is16Bit ? count + 2 : count + 1);
+  ParamInfo getInfo(Parameter param) => params.firstWhere((paramInfo) => paramInfo.param == param);
 
-  FixtureInfo({required this.name, required this.addresses});
+  int get addressCount => params.fold(0, (count, address) => address.is16Bit ? count + 2 : count + 1);
+
+  FixtureInfo({required this.name, required this.params});
 }
