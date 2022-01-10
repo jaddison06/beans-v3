@@ -15,7 +15,7 @@ class TestWindow extends BeansWindow {
       for (var y = 0; y < size.y; y += blockSize.y) {
         display.DrawText(Fonts()[null][20], BeansEngine.dmx.addresses()[1]![
           ((y / blockSize.y) * (size.y / blockSize.y)) + (x / blockSize.x) + 1
-        ].toString(), pos + V2(x, y), Colour.cyan);
+        ].toString(), pos + V2(x, y), Colour.pink);
       }
     }
   }

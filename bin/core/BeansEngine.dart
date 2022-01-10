@@ -3,7 +3,7 @@ import '../ui/BeansUI.dart';
 import 'CommandLine.dart';
 
 class BeansEngine {
-  static late final DmxManager dmx;
+  static final dmx = DmxManager();
   static final commandLine = CommandLine();
   static late final BeansUI _ui;
 
@@ -11,7 +11,6 @@ class BeansEngine {
   static void quit() => _quit = true;
 
   static void go() {
-    dmx = DmxManager();
     _ui = BeansUI();
 
     while (!_quit) {

@@ -10,10 +10,6 @@ import '../dart_codegen.dart';
 import '../core/BeansEngine.dart';
 import 'package:intl/intl.dart';
 
-const commands = {
-  'c': 'Channel'
-};
-
 class _WindowInfo {
   // size and pos are in blocks
   V2 size;
@@ -91,11 +87,11 @@ class UIBase extends Renderable {
     final bottomAreaSize = V2(constraints.x, bottomAreaHeight);
 
     // ---------- TOP ----------
-    display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.magenta);
-    display.DrawText(Fonts()[null][25], DateFormat('hh:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.magenta);
+    display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.pink);
+    display.DrawText(Fonts()[null][25], DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
 
     // ---------- BOTTOM ----------
-    display.DrawText(Fonts()[null][20], BeansEngine.commandLine.toString(), bottomAreaPos + V2(10, 10), Colour.magenta);
+    display.DrawText(Fonts()[null][20], BeansEngine.commandLine.toString(), bottomAreaPos + V2(10, 10), Colour.pink);
 
     // ---------- WINDOWS ----------
 
@@ -111,12 +107,12 @@ class UIBase extends Renderable {
         display.DrawLine(
           windowAreaPos + V2(x, y - (length ~/ 2)),
           windowAreaPos + V2(x, y + (length ~/ 2)),
-          Colour.magenta
+          Colour.pink
         );
         display.DrawLine(
           windowAreaPos + V2(x - (length ~/ 2), y),
           windowAreaPos + V2(x + (length ~/ 2), y),
-          Colour.magenta
+          Colour.pink
         );
       }
     }
@@ -129,8 +125,8 @@ class UIBase extends Renderable {
       final contentPos = winPos + V2(0, blockSize.y);
       final contentSize = winSize - V2(0, blockSize.y);
       display.FillRect(winPos, winSize, Colour.black);
-      display.DrawRect(winPos, winSize, Colour.magenta);
-      display.DrawText(Fonts()[null][blockSize.y - 3], window.win.title, winPos + V2(10, 0), Colour.magenta);
+      display.DrawRect(winPos, winSize, Colour.pink);
+      display.DrawText(Fonts()[null][blockSize.y - 3], window.win.title, winPos + V2(10, 0), Colour.pink);
       
       // todo: fucking strange SetClip behaviour
       //display.SetClip(contentPos, contentSize);
@@ -152,7 +148,6 @@ class UIBase extends Renderable {
           _winOnEvent(_keyboardFocus!, event, pos, constraints);
           break;
         }
-        print(event.key.name);
         switch (event.key) {
           case Key.Backspace: {
             if (event.modifiers.contains(Modifier.Shift)) {
@@ -175,7 +170,6 @@ class UIBase extends Renderable {
           _winOnEvent(_keyboardFocus!, event, pos, constraints);
           break;
         }
-        print(event.text);
         BeansEngine.commandLine.addCommand(event.text);
         break;
       }

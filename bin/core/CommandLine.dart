@@ -64,6 +64,8 @@ class CommandLine {
     return out;
   }
 
+  // todo: actual error tolerance. maybe even realtime?
+
   /// Get a selection literal from [tokens], starting at the start.
   Tuple2<int, List<int>> _selection(List<String> tokens) {
     var pos = 0;
