@@ -2,7 +2,6 @@ import 'package:tuple/tuple.dart';
 import 'BeansEngine.dart';
 import '../dmx/Parameter.dart';
 import '../dmx/Channel.dart';
-import 'dart:io';
 
 extension on String {
   bool get isNumeric =>
@@ -38,11 +37,11 @@ class CommandLine {
     if (isExecuted) {
       clear();
     }
-
+/*
     if (command.isNumeric && _commands.isEmpty) {
       _commands.add('c');
     }
-
+*/
     if (command.isNumeric && _commands.last.isNumeric) {
       _commands.last += command;
     }
@@ -87,6 +86,7 @@ class CommandLine {
   void clear() {
     _commands.clear();
     isExecuted = false;
+    _parse();
   }
   
   // OHHHHH how i wish i could use a Type as a generic parameter
@@ -111,21 +111,11 @@ class CommandLine {
     if (tokens.length == 1) {
       return Tuple2(1, out);
     }
-    while (pos != tokens.length - 1) {
-      print(tokens.join(', '));
-      for (var i = 0; i < pos; i++) {
-        for (var j = 0; j < tokens[i].length + 2; j++) {
-          stdout.write(' ');
-        }
-      }
-      print('^');
-      print(out);
-      
+    while (pos != tokens.length - 1) {      
       final thru = _thru(tokens.sublist(pos + 2));
       if (tokens[pos + 1] == '=') {
         out.addAll(thru);
       } else if (tokens[pos + 1] == '-') {
-        print('eeeeee $thru');
         thru.forEach(out.remove);
       } else {
         break;
@@ -159,7 +149,13 @@ class CommandLine {
   }
 
   void _parse() {
-
+    error = null;
+    if (_commands.isEmpty) return;
+    // check for valid object type
+    if (!['c'].contains(_commands.first)) {
+      error = "Can't have '${commandNames[_commands.first]}' here.";
+      return;
+    }
   }
 
   // command -> objectType selection *action

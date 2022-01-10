@@ -94,9 +94,10 @@ class UIBase extends Renderable {
     final font = Fonts()[null][20];
     final commandLine = BeansEngine.commandLine.toString();
     final error = BeansEngine.commandLine.error;
-    display.DrawText(font, commandLine, bottomAreaPos + V2(10, 10), Colour.pink);
+    final commandLinePos = bottomAreaPos + V2(10, 10);
+    display.DrawText(font, commandLine, commandLinePos, Colour.pink);
     if (error != null) {
-      display.DrawText(font, error, bottomAreaPos + V2(10, 10) + V2(font.TextSize(commandLine).x, 0), Colour.red);
+      display.DrawText(font, error, commandLinePos + V2(font.TextSize(commandLine).x + 15, 0), Colour.red);
     }
 
     // ---------- WINDOWS ----------
