@@ -36,6 +36,10 @@ class SDLDisplayRaw {
     void SDDrawRect(int x, int y, int w, int h, int r, int g, int b, int a)
     @Show(cFillRect)
     void SDFillRect(int x, int y, int w, int h, int r, int g, int b, int a)
+    @Show(cDrawCircle)
+    void SDDrawCircle(int x, int y, int radius, int r, int g, int b, int a)
+    @Show(cFillCircle)
+    void SDFillCircle(int x, int y, int radius, int r, int g, int b, int a)
 
     @Show(cDrawText)
     void SDDrawText(SDLFontRaw *font, char* text, int x, int y, int r, int g, int b, int a)

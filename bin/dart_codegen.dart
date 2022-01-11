@@ -312,6 +312,14 @@ typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig = void Function
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int, int);
 
+// void SDDrawCircle(void* struct_ptr, int x, int y, int radius, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawCircle_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawCircle_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int);
+
+// void SDFillCircle(void* struct_ptr, int x, int y, int radius, int r, int g, int b, int a)
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillCircle_native_sig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32, Int32, Int32, Int32);
+typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDFillCircle_sig = void Function(Pointer<Void>, int, int, int, int, int, int, int);
+
 // void SDDrawText(void* struct_ptr, SDLFontRaw* font, char* text, int x, int y, int r, int g, int b, int a)
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_native_sig = Void Function(Pointer<Void>, Pointer<Void>, Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32, Int32);
 typedef _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig = void Function(Pointer<Void>, Pointer<Void>, Pointer<Utf8>, int, int, int, int, int, int);
@@ -338,6 +346,8 @@ class SDLDisplayRaw {
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig? _SDDrawLine;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig? _SDDrawRect;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig? _SDFillRect;
+    static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawCircle_sig? _SDDrawCircle;
+    static _libSDLDisplay_class_SDLDisplayRaw_method_SDFillCircle_sig? _SDFillCircle;
     static _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig? _SDDrawText;
 
     void _initRefs() {
@@ -353,6 +363,8 @@ class SDLDisplayRaw {
             _SDDrawLine == null ||
             _SDDrawRect == null ||
             _SDFillRect == null ||
+            _SDDrawCircle == null ||
+            _SDFillCircle == null ||
             _SDDrawText == null
         ) {
             final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLDisplay.dll');
@@ -368,6 +380,8 @@ class SDLDisplayRaw {
             _SDDrawLine = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawLine_sig>('SDDrawLine');
             _SDDrawRect = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawRect_sig>('SDDrawRect');
             _SDFillRect = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDFillRect_sig>('SDFillRect');
+            _SDDrawCircle = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawCircle_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawCircle_sig>('SDDrawCircle');
+            _SDFillCircle = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDFillCircle_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDFillCircle_sig>('SDFillCircle');
             _SDDrawText = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDDrawText_sig>('SDDrawText');
         }
     }
@@ -436,6 +450,16 @@ class SDLDisplayRaw {
     void cFillRect(int x, int y, int w, int h, int r, int g, int b, int a) {
         _validatePointer('cFillRect');
         return _SDFillRect!(structPointer, x, y, w, h, r, g, b, a);
+    }
+
+    void cDrawCircle(int x, int y, int radius, int r, int g, int b, int a) {
+        _validatePointer('cDrawCircle');
+        return _SDDrawCircle!(structPointer, x, y, radius, r, g, b, a);
+    }
+
+    void cFillCircle(int x, int y, int radius, int r, int g, int b, int a) {
+        _validatePointer('cFillCircle');
+        return _SDFillCircle!(structPointer, x, y, radius, r, g, b, a);
     }
 
     void cDrawText(SDLFontRaw font, String text, int x, int y, int r, int g, int b, int a) {

@@ -303,6 +303,9 @@ class CommandLine {
       out += _displayName(token) ?? token;
       out += ' ';
     }
+    if (isExecuted) {
+      return out + '✓';
+    }
     return out.substring(0, out.length - 1);
   }
 }

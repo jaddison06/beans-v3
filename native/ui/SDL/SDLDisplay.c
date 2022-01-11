@@ -115,10 +115,71 @@ void SDFillRect(SDLDisplay* self, int x, int y, int w, int h, int r, int g, int 
     SDL_RenderFillRect(self->renderer, &rect);
 }
 
+// SDDrawCircle and SDFillCircle adapted from https://gist.github.com/Gumichan01/332c26f6197a432db91cc4327fcabb1c
+void SDDrawCircle(SDLDisplay* self, int x, int y, int radius, int r, int g, int b, int a) {
+    SDSetColour(self, r, g, b, a);
+    int offsetx, offsety, d;
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius -1;
+
+    while (offsety >= offsetx) {
+        SDL_RenderDrawPoint(self->renderer, x + offsetx, y + offsety);
+        SDL_RenderDrawPoint(self->renderer, x + offsety, y + offsetx);
+        SDL_RenderDrawPoint(self->renderer, x - offsetx, y + offsety);
+        SDL_RenderDrawPoint(self->renderer, x - offsety, y + offsetx);
+        SDL_RenderDrawPoint(self->renderer, x + offsetx, y - offsety);
+        SDL_RenderDrawPoint(self->renderer, x + offsety, y - offsetx);
+        SDL_RenderDrawPoint(self->renderer, x - offsetx, y - offsety);
+        SDL_RenderDrawPoint(self->renderer, x - offsety, y - offsetx);
+
+        if (d >= 2*offsetx) {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        } else if (d < 2 * (radius - offsety)) {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        } else {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+}
+
+void SDFillCircle(SDLDisplay* self, int x, int y, int radius, int r, int g, int b, int a) {
+    SDSetColour(self, r, g, b, a);
+    int offsetx, offsety, d;
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius -1;
+
+    while (offsety >= offsetx) {
+        SDL_RenderDrawLine(self->renderer, x - offsety, y + offsetx, x + offsety, y + offsetx);
+        SDL_RenderDrawLine(self->renderer, x - offsetx, y + offsety, x + offsetx, y + offsety);
+        SDL_RenderDrawLine(self->renderer, x - offsetx, y - offsety, x + offsetx, y - offsety);
+        SDL_RenderDrawLine(self->renderer, x - offsety, y - offsetx, x + offsety, y - offsetx);
+
+        if (d >= 2*offsetx) {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        } else if (d < 2 * (radius - offsety)) {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        } else {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+}
+
 SDL_Texture* GetTextTexture(SDLDisplay* self, TTF_Font* font, char* text, int r, int g, int b, int a, int* width, int* height) {
     SDL_Color col = {r, g, b, a};
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, col);
+    SDL_Surface* textSurface = TTF_RenderUTF8_Blended(font, text, col);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(self->renderer, textSurface);
     *width = textSurface->w;
     *height = textSurface->h;

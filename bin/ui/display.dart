@@ -15,6 +15,8 @@ abstract class Display {
   void DrawLine(V2 a, V2 b, Colour col);
   void DrawRect(V2 pos, V2 size, Colour col);
   void FillRect(V2 pos, V2 size, Colour col);
+  void DrawCircle(V2 pos, int radius, Colour col);
+  void FillCircle(V2 pos, int radius, Colour col);
 
   void DrawText(Font font, String text, V2 pos, Colour col);
 }

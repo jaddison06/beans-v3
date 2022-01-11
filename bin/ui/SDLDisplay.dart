@@ -36,6 +36,16 @@ class SDLDisplay extends SDLDisplayRaw implements Display {
   }
 
   @override
+  void DrawCircle(V2 pos, int radius, Colour col) {
+    cDrawCircle(pos.x, pos.y, radius, col.r, col.g, col.b, col.a);
+  }
+
+  @override
+  void FillCircle(V2 pos, int radius, Colour col) {
+    cFillCircle(pos.x, pos.y, radius, col.r, col.g, col.b, col.a);
+  }
+
+  @override
   void DrawText(covariant SDLFont font, String text, V2 pos, Colour col) {
     // SDL doesn't like drawing empty strings :(
     if (text == '') return;
