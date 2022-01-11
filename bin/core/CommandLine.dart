@@ -1,9 +1,6 @@
-import 'package:tuple/tuple.dart';
 import 'BeansEngine.dart';
 import '../dmx/Parameter.dart';
-import '../dmx/Channel.dart';
 import '../dart_codegen.dart';
-import 'dart:io';
 
 extension on String {
   bool get isNumeric =>
@@ -16,14 +13,16 @@ extension on String {
     double.parse(this) % 1 == 0;
 }
 
-extension <T> on List<T> {
-  List<R> asType<R>() => map((element) => element as R).toList();
-}
-
 class CommandLine {
   final _commands = <String>[];
   var isExecuted = false;
   String? error;
+
+  // if isExecuted is true:
+  //   - error is null
+  //   - objectType is non-null
+  //   - selection is non-null
+  // this is all that's guaranteed, as a selection is a valid command
 
   BeansObject? objectType;
   List<int>? selection;
@@ -133,6 +132,7 @@ class CommandLine {
       't': 'thru',
       'a': 'max',
       'i': 'min',
+      'h': 'home',
       'l': 'level',
       'p': 'pan'
     };
@@ -147,8 +147,8 @@ class CommandLine {
     error = "Can't have '${_displayName(_commands[pos]) ?? _commands[pos]}' here.";
   }
 
-  // command -> objectType selection (method | *action)
-  // selection -> thru *["+" thru] *["-" thru]
+  // command -> objectType selection (method | action*)
+  // selection -> thru ("+" thru)* ("-" thru)*
   // thru -> int ["thru" int]
   // action -> (property [double]) | method
   void _parse() {
@@ -218,7 +218,8 @@ class CommandLine {
 
     const specialValues = <String, double>{
       'a': -1,
-      'i': -2
+      'i': -2,
+      'h': -3
     };
 
     for (; i < _commands.length; i++) {
@@ -265,6 +266,10 @@ class CommandLine {
 
   Map<String, dynamic>? execute() {
     if (isExecuted || error != null) return null;
+    if (properties == null && method == null) {
+      isExecuted = true;
+      return null;
+    }
 
     Map<String, dynamic>? out;
 
@@ -283,6 +288,8 @@ class CommandLine {
                 val = chan.fixture.getInfo(param).max;
               } else if (val == -2) {
                 val = chan.fixture.getInfo(param).min;
+              } else if (val == -3) {
+                val = chan.fixture.getInfo(param).home;
               }
               chan.setValue(param, val);
             }

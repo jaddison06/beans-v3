@@ -4,8 +4,9 @@ class ParamInfo {
   Parameter param;
   double min;
   double max;
+  double home;
   bool is16Bit;
-  ParamInfo(this.param, {this.min = 0, this.max = 255, this.is16Bit = false});
+  ParamInfo(this.param, {this.min = 0, this.max = 255, this.home = 0, this.is16Bit = false});
 }
 
 class FixtureInfo {

@@ -1,17 +1,13 @@
 import 'FixtureInfo.dart';
 import 'Parameter.dart';
 
-double home(ParamInfo param) {
-  return param.min;
-}
-
 class Channel {
   FixtureInfo fixture;
   final int universe;
   final int address;
   final Map<Parameter, double> _values;
   Channel({required this.fixture, required this.universe, required this.address}) :
-    _values = { for (var param in fixture.params) param.param: home(param) };
+    _values = { for (var param in fixture.params) param.param: param.home };
   
   void _checkParam(Parameter param) {
     if (!_values.containsKey(param)) throw Exception("Fixture of type ${fixture.name} has no parameter '${param.name}'");
