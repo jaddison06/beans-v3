@@ -2,7 +2,7 @@ from config import *
 from codegen_types import *
 import os.path as path
 from extensions import *
-from platform import platform
+from platform import system
 
 def generate_makefile_item(target: str, dependencies: list[str], commands: list[str]) -> str:
     out = f'{target}:'
@@ -32,7 +32,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
         for annotation in file.annotations:
             if annotation.name == 'LinkWithLib':
                 link_libs.append(annotation.args[0])
-            elif annotation.name == 'PlatformLinkWithLib' and annotation.args[0] == platform():
+            elif annotation.name == 'PlatformLinkWithLib' and annotation.args[0] == system():
                 link_libs.append(annotation.args[1])
 
         command = f'{get_config(ConfigField.gcc)} -shared -o {lib_name} -fPIC -I{get_config(ConfigField.c_source_dir)} {file.name_no_ext()}.c'
