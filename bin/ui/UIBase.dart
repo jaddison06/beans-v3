@@ -44,6 +44,11 @@ class UIBase extends Renderable {
       pos: V2(2, 2),
       size: V2(10, 6),
       win: TestWindow()
+    ),
+    _WindowInfo(
+      pos: V2(15, 5),
+      size: V2(7, 11),
+      win: TestWindow()
     )
   ];
 
@@ -82,10 +87,15 @@ class UIBase extends Renderable {
     }
   }
 
-  V2 _getBlockSize(V2 constraints) => V2(
-    minBlockSize + ((constraints.x % minBlockSize) ~/ (constraints.x ~/ minBlockSize)),
-    minBlockSize + ((constraints.y % minBlockSize) ~/ (constraints.y ~/ minBlockSize))
-  );
+  V2 _windowAreaSize(V2 constraints) => constraints - V2(0, topAreaHeight) - V2(0, bottomAreaHeight);
+
+  V2 _getBlockSize(V2 constraints) {
+    final windowAreaSize = _windowAreaSize(constraints);
+    return V2(
+      minBlockSize + ((windowAreaSize.x % minBlockSize) ~/ (windowAreaSize.x / minBlockSize)),
+      minBlockSize + ((windowAreaSize.y % minBlockSize) ~/ (windowAreaSize.y / minBlockSize))
+    );
+  }
 
   @override
   V2 getSize(V2 constraints) {
@@ -113,7 +123,7 @@ class UIBase extends Renderable {
     if (win == null) return null;
     if (hit.containedBy(
       _closePos(win, pos, constraints),
-      _getBlockSize(constraints) + V2(0, 1)
+      _getBlockSize(constraints)
     )) return win;
   }
 
@@ -130,7 +140,7 @@ class UIBase extends Renderable {
   @override
   void render(Display display, V2 pos, V2 constraints) {
     final windowAreaPos = pos + V2(0, topAreaHeight);
-    final windowAreaSize = constraints - V2(0, topAreaHeight) - V2(0, bottomAreaHeight);
+    final windowAreaSize = _windowAreaSize(constraints);
 
     // ---------- WINDOWS ----------
 
@@ -178,10 +188,10 @@ class UIBase extends Renderable {
         _modifyWin == window &&
         _closeButtonAt(pos, constraints, _modifyCurrent!) == window
       )) {
-        display.FillRect(closePos, _getBlockSize(constraints) + V2(0, 1), Colour.pink);
+        display.FillRect(closePos, _getBlockSize(constraints), Colour.pink);
         closeCol = Colour.black;
       } else {
-        display.DrawRect(closePos, _getBlockSize(constraints) + V2(0, 1), Colour.pink);
+        display.DrawRect(closePos, _getBlockSize(constraints), Colour.pink);
         closeCol = Colour.pink;
       }
       
@@ -194,18 +204,27 @@ class UIBase extends Renderable {
       //display.SetClip(contentPos, contentSize);
       window.win.render(display, contentPos, contentSize, blockSize);
       //display.ResetClip();
+    }
 
-      if (
-        _modifyState == _WMModifyState.Move &&
-        _modifyWin == window
-      ) {
+    if (_modifyState == _WMModifyState.Move) {
+        var group = _titlebarAt(pos, constraints, _modifyCurrent!);
+        group ??= _windowAt(pos, constraints, _modifyCurrent!);
+        if (group == _modifyWin) group = null;
+        V2 newPos;
+        V2 newSize;
+        if (group != null) {
+          newPos = group.pos * _getBlockSize(constraints);
+          newSize = group.size * _getBlockSize(constraints);
+        } else {
+          newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
+          newSize = _modifyWin!.size * _getBlockSize(constraints);
+        }
         display.DrawRect(
-          winPos + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints)),
-          winSize,
+          newPos,
+          newSize,
           Colour.white
         );
       }
-    }
 
     final topAreaSize = V2(constraints.x, topAreaHeight);
 
@@ -230,6 +249,7 @@ class UIBase extends Renderable {
   void _executeModify(V2 pos, V2 constraints) {
     switch (_modifyState) {
       case _WMModifyState.Move: {
+
         break;
       }
       case _WMModifyState.Close: {
@@ -343,14 +363,10 @@ class UIBase extends Renderable {
           _executeModify(pos, constraints);
           _modifyState = _WMModifyState.None;
           _modifyWin = _modifyStart = _modifyCurrent = null;
-          break;
-        }
-        if (_mouseDownReceiver != null) {
+        } else if (_mouseDownReceiver != null) {
           _winOnEvent(_mouseDownReceiver!, event, pos, constraints);
           _mouseDownReceiver = null;
-          break;
         }
-        unreachable();
         break;
       }
       default: {}
