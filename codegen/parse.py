@@ -1,6 +1,6 @@
 from codegen_types import *
 from annotations import *
-from termcolor import colored
+from colored import colored
 import sys
 
 def strip_all(strings: list[str]) -> list[str]:

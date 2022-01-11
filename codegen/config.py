@@ -1,5 +1,5 @@
 import sys
-from termcolor import colored
+from colored import colored
 import yaml
 import os.path as path
 from enum import Enum, auto

@@ -131,7 +131,6 @@ enum EventType {
     MouseMove,
     MouseDown,
     MouseUp,
-    MouseScroll,
 }
 
 EventType EventTypeFromInt(int val) => EventType.values[val];
@@ -146,7 +145,6 @@ String EventTypeToString(EventType val) {
         case EventType.MouseMove: { return 'MouseMove'; }
         case EventType.MouseDown: { return 'MouseDown'; }
         case EventType.MouseUp: { return 'MouseUp'; }
-        case EventType.MouseScroll: { return 'MouseScroll'; }
     }
 }
 

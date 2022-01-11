@@ -27,7 +27,6 @@ typedef enum {
     EventType_MouseMove = 4,
     EventType_MouseDown = 5,
     EventType_MouseUp = 6,
-    EventType_MouseScroll = 7,
 } EventType;
 
 typedef enum {

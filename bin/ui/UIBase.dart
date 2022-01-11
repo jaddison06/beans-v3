@@ -9,6 +9,7 @@ import 'Event.dart';
 import '../dart_codegen.dart';
 import '../core/BeansEngine.dart';
 import 'package:intl/intl.dart';
+import '../core/unreachable.dart';
 
 // you could just use a List but this makes it obvious what it's doing
 class Stack<T> {
@@ -47,10 +48,12 @@ class UIBase extends Renderable {
   ];
 
   final _keyboardFocus = Stack<_WindowInfo>();
-  
+  _WindowInfo? _mouseDownReceiver;
+
   var _modifyState = _WMModifyState.None;
   _WindowInfo? _modifyWin;
-  V2? _modifyData;
+  V2? _modifyStart;
+  V2? _modifyCurrent;
 
   final minBlockSize = 40;
   final topAreaHeight = 30;
@@ -164,6 +167,10 @@ class UIBase extends Renderable {
     }
   }
 
+  void _executeModify(V2 pos, V2 constraints) {
+
+  }
+
   void _winOnEvent(_WindowInfo win, Event event, V2 pos, V2 constraints) {
     win.win.onEvent(_windowPos(win, pos, constraints) + V2(0, _getBlockSize(constraints).y), event);
   }
@@ -200,6 +207,51 @@ class UIBase extends Renderable {
           break;
         }
         BeansEngine.commandLine.addCommand(event.text);
+        break;
+      }
+      case EventType.MouseMove: {
+        switch (_modifyState) {
+          case _WMModifyState.None: {
+            final win = _windowAt(pos, constraints, event.pos);
+            if (win != null) _winOnEvent(win, event, pos, constraints);
+            break;
+          }
+          case _WMModifyState.Move: {
+            //_modifyCurrent
+            break;
+          }
+          default: {}
+        }
+        break;
+      }
+      case EventType.MouseDown: {
+        final win = _windowAt(pos, constraints, event.pos);
+        if (win != null) {
+          _winOnEvent(win, event, pos, constraints);
+          _mouseDownReceiver = win;
+        } else {
+          // only gonna calculate this if we hit the else branch - it's expensive, and windows take priority
+          final tb = _titlebarAt(pos, constraints, event.pos);
+          if (tb != null) {
+            _modifyState = _WMModifyState.Move;
+            _modifyStart = event.pos;
+            _modifyWin = tb;
+          } else {
+            // clicked empty space - add window or smth
+          }
+        }
+        break;
+      }
+      case EventType.MouseUp: {
+        if (_modifyState != _WMModifyState.None) {
+          _executeModify(pos, constraints);
+          break;
+        }
+        if (_mouseDownReceiver != null) {
+          _winOnEvent(_mouseDownReceiver!, event, pos, constraints);
+          _mouseDownReceiver = null;
+        }
+        unreachable();
         break;
       }
       default: {}

@@ -6,7 +6,8 @@ enum EventType {
     MouseMove
     MouseDown
     MouseUp
-    MouseScroll
+    // can't be arsed tbh
+    //MouseScroll
 }
 
 enum MouseButton {

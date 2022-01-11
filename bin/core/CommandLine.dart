@@ -1,6 +1,7 @@
 import 'BeansEngine.dart';
 import '../dmx/Parameter.dart';
 import '../dart_codegen.dart';
+import 'unreachable.dart';
 
 extension on String {
   bool get isNumeric =>
@@ -260,7 +261,7 @@ class CommandLine {
         return true;
       }
     }
-    // unreachable
+    unreachable();
     return false;
   }
 

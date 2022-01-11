@@ -152,11 +152,11 @@ int SEPoll(SDLEvent* self) {
             self->mouseButton = TranslateMouseButton(self);
             break;
         }
-        case SDL_MOUSEWHEEL: {
+        /*case SDL_MOUSEWHEEL: {
             self->type = EventType_MouseScroll;
             // todo: how do scroll selfs work?
             break;
-        }
+        }*/
         default: {
             self->type = EventType_None;
             break;
