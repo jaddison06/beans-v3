@@ -39,7 +39,9 @@ class V2 {
     }
   }
 
-  V2 operator /(dynamic other) {
+  V2 operator /(dynamic other) => this ~/ other;
+
+  V2 operator ~/(dynamic other) {
     if (other is int) {
       return V2(x ~/ other, y ~/ other);
     } else if (other is V2) {

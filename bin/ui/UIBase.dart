@@ -173,7 +173,11 @@ class UIBase extends Renderable {
 
       Colour closeCol;
 
-      if (_closeHover == window) {
+      if (_closeHover == window || (
+        _modifyState == _WMModifyState.Close &&
+        _modifyWin == window &&
+        _closeButtonAt(pos, constraints, _modifyCurrent!) == window
+      )) {
         display.FillRect(closePos, _getBlockSize(constraints) + V2(0, 1), Colour.pink);
         closeCol = Colour.black;
       } else {
@@ -190,6 +194,17 @@ class UIBase extends Renderable {
       //display.SetClip(contentPos, contentSize);
       window.win.render(display, contentPos, contentSize, blockSize);
       //display.ResetClip();
+
+      if (
+        _modifyState == _WMModifyState.Move &&
+        _modifyWin == window
+      ) {
+        display.DrawRect(
+          winPos + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints)),
+          winSize,
+          Colour.white
+        );
+      }
     }
 
     final topAreaSize = V2(constraints.x, topAreaHeight);
@@ -293,7 +308,6 @@ class UIBase extends Renderable {
             _modifyWin = close;
             _modifyCurrent = event.pos;
           } else {
-            // check for cross
             _modifyState = _WMModifyState.Move;
             _modifyWin = tb;
             _modifyStart = _modifyCurrent = event.pos;
@@ -320,7 +334,7 @@ class UIBase extends Renderable {
             _closeHover = win;
           }
         } else {
-          _modifyCurrent == event.pos;
+          _modifyCurrent = event.pos;
         }
         break;
       }
