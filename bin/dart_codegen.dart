@@ -4,8 +4,6 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 // for @mustCallSuper
 import 'package:meta/meta.dart';
-// for Platform.script
-import 'dart:io';
 
 // ----------FILE: NATIVE\3RDPARTY\LIBE131\E131.GEN----------
 
@@ -79,8 +77,7 @@ class E131 {
             _BeansE131SetValue == null ||
             _BeansE131Send == null
         ) {
-            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;
-            final lib = DynamicLibrary.open('$scriptDir/native/3rdparty/libe131/libe131.dll');
+            final lib = DynamicLibrary.open('build/native/3rdparty/libe131/libe131.dll');
 
             _BeansE131Init = lib.lookupFunction<_libe131_class_E131_method_BeansE131Init_native_sig, _libe131_class_E131_method_BeansE131Init_sig>('BeansE131Init');
             _BeansE131GetError = lib.lookupFunction<_libe131_class_E131_method_BeansE131GetError_native_sig, _libe131_class_E131_method_BeansE131GetError_sig>('BeansE131GetError');
@@ -370,8 +367,7 @@ class SDLDisplayRaw {
             _SDFillCircle == null ||
             _SDDrawText == null
         ) {
-            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;
-            final lib = DynamicLibrary.open('$scriptDir/native/ui/SDL/libSDLDisplay.dll');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLDisplay.dll');
 
             _SDInit = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDInit_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_sig>('SDInit');
             _SDGetErrorCode = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDGetErrorCode_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDGetErrorCode_sig>('SDGetErrorCode');
@@ -566,8 +562,7 @@ class SDLEventRaw {
             _SEHasCaps == null ||
             _SEPoll == null
         ) {
-            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;
-            final lib = DynamicLibrary.open('$scriptDir/native/ui/SDL/libSDLEvent.dll');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLEvent.dll');
 
             _SEInit = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEInit_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEInit_sig>('SEInit');
             _SEDestroy = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig>('SEDestroy');
@@ -681,8 +676,7 @@ class libSDLFont {
             _SFInit == null ||
             _SFQuit == null
         ) {
-            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;
-            final lib = DynamicLibrary.open('$scriptDir/native/ui/SDL/libSDLFont.dll');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
 
             _SFInit = lib.lookupFunction<_libSDLFont_func_SFInit_native_sig, _libSDLFont_func_SFInit_sig>('SFInit');
             _SFQuit = lib.lookupFunction<_libSDLFont_func_SFQuit_native_sig, _libSDLFont_func_SFQuit_sig>('SFQuit');
@@ -741,8 +735,7 @@ class SDLFontRaw {
             _SFDestroy == null ||
             _SFGetTextSize == null
         ) {
-            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;
-            final lib = DynamicLibrary.open('$scriptDir/native/ui/SDL/libSDLFont.dll');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
 
             _SFCreate = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig, _libSDLFont_class_SDLFontRaw_method_SFCreate_sig>('SFCreate');
             _SFDestroy = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig, _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig>('SFDestroy');

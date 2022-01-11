@@ -2,7 +2,7 @@ from codegen_types import *
 from typelookup import *
 from banner import *
 from config import *
-from shared_library_extension import *
+from extensions import *
 from typing import Callable
 from annotations import *
 import yaml

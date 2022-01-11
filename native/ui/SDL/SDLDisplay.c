@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include "c_codegen.h"
 
+#ifdef BEANS_WINDOWS
+#include <windows.h>
+#endif
+
 typedef struct {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -29,6 +33,10 @@ SDLDisplay* LogSDLError(SDLDisplay* self, SDLInitErrorCode errorCode) {
 }
 
 SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen) {
+#ifdef BEANS_WINDOWS
+    SetProcessDPIAware();
+#endif
+
     SDLDisplay* out = malloc(sizeof(SDLDisplay));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)

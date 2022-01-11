@@ -1,7 +1,7 @@
 from config import *
 from codegen_types import *
 import os.path as path
-from shared_library_extension import *
+from extensions import *
 
 def generate_makefile_item(target: str, dependencies: list[str], commands: list[str]) -> str:
     out = f'{target}:'
@@ -49,7 +49,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
         )
 
         libs.append(lib_name)
-    
+
     
     # there's a directory called codegen, so we have to use .PHONY to
     # tell make to use the rule called 'codegen' instead of the directory
@@ -67,7 +67,8 @@ def codegen(files: list[ParsedGenFile]) -> str:
             rm_dir('build/release'),
             mkdir('build/release'),
             copy_dir(f'build/{get_config(ConfigField.c_source_dir)}', f'build/release/{get_config(ConfigField.c_source_dir)}'),
-            'dart compile kernel bin/beans.dart -o build/release/beans.dill'
+            f'{get_config(ConfigField.python)} codegen/release_readme.py',
+            f'dart compile exe bin/beans.dart -o build/release/beans{executable_extension()}'
         ]
     ) + generate_makefile_item(
         'libraries',

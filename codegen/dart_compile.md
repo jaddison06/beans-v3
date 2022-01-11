@@ -10,4 +10,4 @@ JIT snapshot|?
 AOT snapshot|35.2
 Executable|35.0
 
-Clearly native code is faster, however AOT and executable builds had some weird scaling issues that need investigation. Sticking with dill for now.
+Clearly native code is faster, so I'm using executables at the moment.
