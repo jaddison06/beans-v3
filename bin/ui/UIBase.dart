@@ -10,6 +10,18 @@ import '../dart_codegen.dart';
 import '../core/BeansEngine.dart';
 import 'package:intl/intl.dart';
 
+// you could just use a List but this makes it obvious what it's doing
+class Stack<T> {
+  final _list = <T>[];
+
+  bool get isEmpty => _list.isEmpty;
+  bool get isNotEmpty => _list.isNotEmpty;
+
+  T pop() => _list.removeLast();
+  T peek() => _list.last;
+  void push(T val) => _list.add(val);
+}
+
 class _WindowInfo {
   // size and pos are in blocks
   V2 size;
@@ -34,7 +46,7 @@ class UIBase extends Renderable {
     )
   ];
 
-  _WindowInfo? _keyboardFocus;
+  final _keyboardFocus = Stack<_WindowInfo>();
   
   var _modifyState = _WMModifyState.None;
   _WindowInfo? _modifyWin;
@@ -43,6 +55,16 @@ class UIBase extends Renderable {
   final minBlockSize = 40;
   final topAreaHeight = 30;
   final bottomAreaHeight = 80;
+
+  void requestKeyboardFocus(BeansWindow win) {
+    _keyboardFocus.push(_windows.firstWhere((info) => info.win == win));
+  }
+
+  void endKeyboardFocus(BeansWindow win) {
+    if (_keyboardFocus.isNotEmpty && win == _keyboardFocus.peek().win) {
+      _keyboardFocus.pop();
+    }
+  }
 
   V2 _getBlockSize(V2 constraints) => V2(
     minBlockSize + ((constraints.x % minBlockSize) ~/ (constraints.x ~/ minBlockSize)),
@@ -80,25 +102,6 @@ class UIBase extends Renderable {
   void render(Display display, V2 pos, V2 constraints) {
     final windowAreaPos = pos + V2(0, topAreaHeight);
     final windowAreaSize = constraints - V2(0, topAreaHeight) - V2(0, bottomAreaHeight);
-
-    final topAreaSize = V2(constraints.x, topAreaHeight);
-
-    final bottomAreaPos = V2(pos.x, pos.y + topAreaHeight + windowAreaSize.y);
-    final bottomAreaSize = V2(constraints.x, bottomAreaHeight);
-
-    // ---------- TOP ----------
-    display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.pink);
-    display.DrawText(Fonts()[null][25], DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
-
-    // ---------- BOTTOM ----------
-    final font = Fonts()[null][20];
-    final commandLine = BeansEngine.commandLine.toString();
-    final error = BeansEngine.commandLine.error;
-    final commandLinePos = bottomAreaPos + V2(10, 10);
-    display.DrawText(font, commandLine, commandLinePos, Colour.pink);
-    if (error != null) {
-      display.DrawText(font, error, commandLinePos + V2(font.TextSize(commandLine).x + 15, 0), Colour.red);
-    }
 
     // ---------- WINDOWS ----------
 
@@ -140,6 +143,25 @@ class UIBase extends Renderable {
       window.win.render(display, contentPos, contentSize, blockSize);
       //display.ResetClip();
     }
+
+    final topAreaSize = V2(constraints.x, topAreaHeight);
+
+    final bottomAreaPos = V2(pos.x, pos.y + topAreaHeight + windowAreaSize.y);
+    final bottomAreaSize = V2(constraints.x, bottomAreaHeight);
+
+    // ---------- TOP ----------
+    display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.pink);
+    display.DrawText(Fonts()[null][25], DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
+
+    // ---------- BOTTOM ----------
+    final font = Fonts()[null][20];
+    final commandLine = BeansEngine.commandLine.toString();
+    final error = BeansEngine.commandLine.error;
+    final commandLinePos = bottomAreaPos + V2(10, 10);
+    display.DrawText(font, commandLine, commandLinePos, Colour.pink);
+    if (error != null) {
+      display.DrawText(font, error, commandLinePos + V2(font.TextSize(commandLine).x + 15, 0), Colour.red);
+    }
   }
 
   void _winOnEvent(_WindowInfo win, Event event, V2 pos, V2 constraints) {
@@ -151,8 +173,8 @@ class UIBase extends Renderable {
     if (event.type == EventType.Key && event.key == Key.Escape) BeansEngine.quit();
     switch (event.type) {
       case EventType.Key: {
-        if (_keyboardFocus != null) {
-          _winOnEvent(_keyboardFocus!, event, pos, constraints);
+        if (_keyboardFocus.isNotEmpty) {
+          _winOnEvent(_keyboardFocus.peek(), event, pos, constraints);
           break;
         }
         switch (event.key) {
@@ -173,8 +195,8 @@ class UIBase extends Renderable {
         break;
       }
       case EventType.Text: {
-        if (_keyboardFocus != null) {
-          _winOnEvent(_keyboardFocus!, event, pos, constraints);
+        if (_keyboardFocus.isNotEmpty) {
+          _winOnEvent(_keyboardFocus.peek(), event, pos, constraints);
           break;
         }
         BeansEngine.commandLine.addCommand(event.text);

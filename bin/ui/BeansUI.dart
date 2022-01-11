@@ -11,7 +11,8 @@ import '../core/BeansEngine.dart';
 class BeansUI {
   final Display _display = SDLDisplay('beans');
   final Event _event = SDLEvent();
-  Renderable base = UIBase();
+  // this isn't a renderable any more it's explicitly a UIBase
+  final base = UIBase();
 
   BeansUI() {
     libSDLFont().Init();
