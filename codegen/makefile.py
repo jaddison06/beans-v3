@@ -14,6 +14,7 @@ UTIL = f'{get_config(ConfigField.python)} codegen/fs_util.py'
 def rm_file(fname: str) -> str: return f'{UTIL} rm_file {fname}'
 def rm_dir(dirname: str) -> str: return f'{UTIL} rm_dir {dirname}'
 def mkdir(dirname: str) -> str: return f'{UTIL} mkdir {dirname}'
+def copy_dir(from_: str, to: str) -> str: return f'{UTIL} copy_dir {from_} {to}'
 
 def codegen(files: list[ParsedGenFile]) -> str:
     out = ''
@@ -58,6 +59,17 @@ def codegen(files: list[ParsedGenFile]) -> str:
         ['codegen', 'libraries'], # codegen MUST be before libraries because the C files might need to include c_codegen.h
         []
     ) + generate_makefile_item(
+        'release',
+        [
+            'codegen-release', 'libraries'
+        ],
+        [
+            rm_dir('build/release'),
+            mkdir('build/release'),
+            copy_dir(f'build/{get_config(ConfigField.c_source_dir)}', f'build/release/{get_config(ConfigField.c_source_dir)}'),
+            'dart compile kernel bin/beans.dart -o build/release/beans.dill'
+        ]
+    ) + generate_makefile_item(
         'libraries',
         libs,
         []
@@ -66,6 +78,12 @@ def codegen(files: list[ParsedGenFile]) -> str:
         [],
         [
             f'{get_config(ConfigField.python)} codegen/main.py'
+        ]
+    ) + generate_makefile_item(
+        'codegen-release',
+        [],
+        [
+            f'{get_config(ConfigField.python)} codegen/main.py --release'
         ]
     ) + generate_makefile_item(
         'run',

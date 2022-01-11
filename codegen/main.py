@@ -1,5 +1,6 @@
 import os
 import os.path as path
+from sys import argv
 
 from parse import *
 from codegen_types import *
@@ -22,6 +23,8 @@ def all_with_extension(directory: str, ext: str) -> list[str]:
     return out
 
 def main():
+    release = len(argv) > 1 and argv[1] == '--release'
+
     parsed_files: list[ParsedGenFile] = []
     for gen_file in all_with_extension(
         get_config(ConfigField.c_source_dir),
@@ -32,7 +35,7 @@ def main():
         )
     
     with open(get_config(ConfigField.dart_output_path), 'wt') as fh:
-        fh.write(dart    .codegen(parsed_files))
+        fh.write(dart    .codegen(parsed_files, release))
     with open(get_config(ConfigField.c_output_path),    'wt') as fh:
         fh.write(c       .codegen(parsed_files))
     with open('Makefile',                               'wt') as fh:

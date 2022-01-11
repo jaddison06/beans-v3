@@ -41,6 +41,7 @@ DART: dict[str, str] = {
 
 # omg globals! what the hell jaddison! you're a terrible programmer and i hope you eat shit!
 lookup: TypeLookup
+release: bool
 
 def get_typename(type_: CodegenType, typename_dict: dict[str, str]) -> str:
     assert type_.typename in typename_dict or lookup.exists(type_.typename), f'Cannot find type {type_.typename}'
@@ -140,7 +141,14 @@ def param_list(func: CodegenFunction) -> str:
 def func_class_get_library(file: ParsedGenFile) -> str:
     out = ''
 
-    out += f"            final lib = DynamicLibrary.open('build/"
+    if release:
+        out += '            final scriptDir = File(Platform.script.toFilePath()).parent.absolute.path;\n'
+
+    out += f"            final lib = DynamicLibrary.open('"
+    if release:
+        out += '$scriptDir/'
+    else:
+        out += 'build/'
     # if we're on Windows, we need to either use forward slashes or escape the string,
     # otherwise '\' will appear in th Dart string as an escape character
     out += file.libpath_no_ext().replace('\\', '/')
@@ -459,7 +467,11 @@ class BeansObjectMethod {
 
     return out
 
-def codegen(files: list[ParsedGenFile]) -> str:
+def codegen(files: list[ParsedGenFile], release_: bool) -> str:
+    global lookup, release
+    lookup = TypeLookup(files)
+    release = release_
+
     out = ''
     out += \
 '''// for native types & basic FFI functionality
@@ -468,11 +480,9 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 // for @mustCallSuper
 import 'package:meta/meta.dart';
-
 '''
-
-    global lookup
-    lookup = TypeLookup(files)
+    if release: out += "// for Platform.script\nimport 'dart:io';\n"
+    out += '\n'
 
     for file in files:
         out += banner(f'file: {file.name}')

@@ -2,10 +2,19 @@
 
 all: codegen libraries
 
+release: codegen-release libraries
+	python codegen/fs_util.py rm_dir build/release
+	python codegen/fs_util.py mkdir build/release
+	python codegen/fs_util.py copy_dir build/native build/release/native
+	dart compile kernel bin/beans.dart -o build/release/beans.dill
+
 libraries: build/native\3rdparty\libe131/libe131.dll build/native\ui\SDL/libSDLDisplay.dll build/native\ui\SDL/libSDLEvent.dll build/native\ui\SDL/libSDLFont.dll
 
 codegen:
 	python codegen/main.py
+
+codegen-release:
+	python codegen/main.py --release
 
 run: all
 	dart run
