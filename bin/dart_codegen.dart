@@ -750,11 +750,11 @@ class SDLFontRaw {
 // ----------OBJECTS----------
 
 class BeansObject {
-    final String displayName;
+    final String name;
     final String keyCode;
     final Map<String, BeansObjectProperty> properties;
     final Map<String, BeansObjectMethod> methods;
-    const BeansObject(this.displayName, this.keyCode, this.properties, this.methods);
+    const BeansObject(this.name, this.keyCode, this.properties, this.methods);
 }
 
 class BeansObjectProperty {
@@ -771,7 +771,7 @@ class BeansObjectMethod {
 }
 
 const obj_Channel = BeansObject(
-    'Chan',
+    'Channel',
     'c',
     {
         'level': BeansObjectProperty('level', true, true),

@@ -390,11 +390,11 @@ def objects() -> str:
     
     out += \
 '''class BeansObject {
-    final String displayName;
+    final String name;
     final String keyCode;
     final Map<String, BeansObjectProperty> properties;
     final Map<String, BeansObjectMethod> methods;
-    const BeansObject(this.displayName, this.keyCode, this.properties, this.methods);
+    const BeansObject(this.name, this.keyCode, this.properties, this.methods);
 }
 
 class BeansObjectProperty {
@@ -414,7 +414,7 @@ class BeansObjectMethod {
     
     for val_name, val_info in values.items():
         out += f'const obj_{val_name} = BeansObject(\n'
-        out += f"    '{val_info['display']}',\n"
+        out += f"    '{val_name}',\n"
         out += f"    '{val_info['key']}',\n"
         if 'properties' in val_info:
             out += '    {\n'

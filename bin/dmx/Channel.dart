@@ -1,7 +1,7 @@
 import 'FixtureInfo.dart';
 import 'Parameter.dart';
 
-int home(ParamInfo param) {
+double home(ParamInfo param) {
   return param.min;
 }
 
@@ -9,7 +9,7 @@ class Channel {
   FixtureInfo fixture;
   final int universe;
   final int address;
-  final Map<Parameter, int> _values;
+  final Map<Parameter, double> _values;
   Channel({required this.fixture, required this.universe, required this.address}) :
     _values = { for (var param in fixture.params) param.param: home(param) };
   
@@ -34,7 +34,7 @@ class Channel {
     return out;
   }
   
-  void setValue(Parameter param, int value) {
+  void setValue(Parameter param, double value) {
     _checkParam(param);
     final info = fixture.getInfo(param);
     if (value < info.min) {
@@ -45,7 +45,7 @@ class Channel {
     _values[param] = value;
   }
 
-  int getValue(Parameter param) {
+  double getValue(Parameter param) {
     _checkParam(param);
     return _values[param]!;
   }

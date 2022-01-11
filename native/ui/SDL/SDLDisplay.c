@@ -38,7 +38,7 @@ SDLDisplay* SDInit(const char* title, BEANS_BOOL fullscreen) {
     if (fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     else flags |= SDL_WINDOW_RESIZABLE;
 
-    out->window = SDL_CreateWindow(title, 40, 40, 200, 200, flags);
+    out->window = SDL_CreateWindow(title, 40, 40, 350, 350, flags);
     if (out->window == NULL)
         return LogSDLError(out, SDLInitErrorCode_CreateWindow_Fail);
 

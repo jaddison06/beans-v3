@@ -13,7 +13,7 @@ Channel testChannel(int addr) => Channel(
     name: 'Test Fixture',
     params: [
       ParamInfo(
-        Parameter.Intensity,
+        Parameter.level,
         min: 0,
         max: 255,
       )

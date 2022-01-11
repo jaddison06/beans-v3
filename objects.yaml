@@ -1,5 +1,4 @@
 Channel:
-  display: Chan
   key: c
   properties:
     - level

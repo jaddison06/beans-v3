@@ -2,8 +2,8 @@ import 'Parameter.dart';
 
 class ParamInfo {
   Parameter param;
-  int min;
-  int max;
+  double min;
+  double max;
   bool is16Bit;
   ParamInfo(this.param, {this.min = 0, this.max = 255, this.is16Bit = false});
 }

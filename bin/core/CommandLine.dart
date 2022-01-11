@@ -2,35 +2,34 @@ import 'package:tuple/tuple.dart';
 import 'BeansEngine.dart';
 import '../dmx/Parameter.dart';
 import '../dmx/Channel.dart';
+import '../dart_codegen.dart';
+import 'dart:io';
 
 extension on String {
   bool get isNumeric =>
     this != 'NaN' &&
     this != 'Infinity' &&
     double.tryParse(this) != null;
+  
+  bool get isInt =>
+    isNumeric &&
+    double.parse(this) % 1 == 0;
 }
 
 extension <T> on List<T> {
   List<R> asType<R>() => map((element) => element as R).toList();
 }
 
-const commandNames = {
-  't': 'thru',
-  '=': '+',
-  '-': '-',
-  'f': 'full',
-  'c': 'Chan',
-  'l': 'level'
-};
-
 class CommandLine {
   final _commands = <String>[];
   var isExecuted = false;
   String? error;
 
-  String? objectType;
+  BeansObject? objectType;
   List<int>? selection;
-  Map<String, String?>? properties;
+  BeansObjectMethod? method;
+  // see specialValues in _parse()
+  Map<BeansObjectProperty, double?>? properties;
 
   void addCommand(String command) {
     if (error != null) return;
@@ -42,39 +41,18 @@ class CommandLine {
       _commands.add('c');
     }
 */
-    if (command.isNumeric && _commands.last.isNumeric) {
+    if (command.isNumeric && _commands.isNotEmpty && _commands.last.isNumeric) {
       _commands.last += command;
-    }
-
-    if (commandNames.containsKey(command) || command.isNumeric) {
-      _commands.add(command);
-    } else if (commandNames.containsKey(command.toLowerCase())) {
-      _commands.add(command.toLowerCase());
+    } else {
+      if (_displayName(command) != null || command.isNumeric) {
+        _commands.add(command);
+      } else if (objectsByKeyCode.containsKey(command.toLowerCase())) {
+        _commands.add(command.toLowerCase());
+      }
     }
 
     _parse();
   }
-
-/*
-  void _validate() {
-    error = null;
-    final tokens = _tokens();
-    if (tokens.length < 2) return;
-
-    var hadThru = false;
-    if (tokens.last == 't') {
-      tokens.removeLast();
-      hadThru = true;
-    }
-
-    final selection = _selection(tokens.sublist(1));
-    final objects = _objects(tokens.first, selection.item2);
-    if (hadThru) tokens.add('t');
-    if (objects.any((obj) => obj == null)) {
-      error = 'Invalid selection';
-      return;
-    }
-  }*/
 
   void backspace() {
     if (isExecuted) clear();
@@ -88,34 +66,34 @@ class CommandLine {
     isExecuted = false;
     _parse();
   }
-  
-  // OHHHHH how i wish i could use a Type as a generic parameter
-  List<Object?> _objects(String name, List<int> selection) {
-    Object? Function(int) getObject;
-    switch (name) {
-      case 'c': getObject = BeansEngine.getObject<Channel>; break;
-      default: throw Exception("'$name' is not the short name for an object type");
-    }
-    return selection.map((i) => getObject(i)).toList();
-  }
 
   /// Get a selection literal from [tokens], starting at the start.
-  Tuple2<int, List<int>> getSelection(List<String> tokens) {
-    if (tokens.isEmpty) return Tuple2(0, []);
+  List<int> getSelection(List<String> tokens) {
+    if (tokens.isEmpty) return [];
     /// pos is the token BEFORE the next binary operator
     var pos = 0;
     final out = _thru(tokens);
-    if (tokens.length > 1 && tokens[1] == 't') {
+    if (tokens.length == 1) return out;
+    if (tokens[1] == 't') {
       pos += 2;
     }
-    if (tokens.length == 1) {
-      return Tuple2(1, out);
-    }
-    while (pos != tokens.length - 1) {      
-      final thru = _thru(tokens.sublist(pos + 2));
+
+    while (pos != tokens.length - 1) {
+      /*
+      print(tokens.join(', '));
+      for (var i = 0; i < pos; i++) {
+        for (var j = 0; j < tokens[i].length + 2; j++) {
+          stdout.write(' ');
+        }
+      }
+      print('^ ($pos)');
+      print(out);
+      */
       if (tokens[pos + 1] == '=') {
+        final thru = _thru(tokens.sublist(pos + 2));
         out.addAll(thru);
       } else if (tokens[pos + 1] == '-') {
+        final thru = _thru(tokens.sublist(pos + 2));
         thru.forEach(out.remove);
       } else {
         break;
@@ -127,7 +105,7 @@ class CommandLine {
       }
     }
 
-    return Tuple2(pos + 1, out);
+    return out;
   }
 
   List<int> _thru(List<String> tokens) {
@@ -148,59 +126,165 @@ class CommandLine {
     return out;
   }
 
-  void _parse() {
-    error = null;
-    if (_commands.isEmpty) return;
-    // check for valid object type
-    if (!['c'].contains(_commands.first)) {
-      error = "Can't have '${commandNames[_commands.first]}' here.";
-      return;
+  String? _displayName(String key) {
+    const _display = {
+      '=': '+',
+      '-': '-',
+      't': 'thru',
+      'a': 'max',
+      'i': 'min',
+      'l': 'level',
+      'p': 'pan'
+    };
+    if (objectsByKeyCode.containsKey(key)) {
+      return objectsByKeyCode[key]!.name;
+    } else if (_display.containsKey(key)) {
+      return _display[key];
     }
   }
 
-  // command -> objectType selection *action
+  void _setError(int pos) {
+    error = "Can't have '${_displayName(_commands[pos]) ?? _commands[pos]}' here.";
+  }
+
+  // command -> objectType selection (method | *action)
   // selection -> thru *["+" thru] *["-" thru]
-  // thru -> number ["thru" number]
-  // action -> property [val]
-  void execute() {
-    if (isExecuted || error != null) return;
-    String selectionType;
-    List<int> selection;
-    int selectionLen;
+  // thru -> int ["thru" int]
+  // action -> (property [double]) | method
+  void _parse() {
+    error = null;
+    objectType = null;
+    selection = null;
+    method = null;
+    properties = null;
 
-    // minimal implementation, assumes everything is verbose & property values are numbers
-    selectionType = _commands.first;
-    final selectionTuple = getSelection(_commands.sublist(1));
-    selectionLen = selectionTuple.item1;
-    selection = selectionTuple.item2;
+    if (_commands.isEmpty) return;
 
-    // Could have duplicates, so use a list of tuples instead of a map.
-    final actions = <Tuple2<String, double?>>[];
-    String? current;
-    for (var i = selectionLen + 2; i < _commands.length; i++) {
-      if (_commands[i].isNumeric) {
-        actions.add(Tuple2(current!, double.parse(_commands[i])));
-        current = null;
-      }
-      else {
-        if (current != null) {
-          actions.add(Tuple2(current, null));
+    // check for valid object type
+    if (!objectsByKeyCode.containsKey(_commands.first)) {
+      _setError(0);
+      return;
+    }
+    objectType = objectsByKeyCode[_commands.first];
+
+    // keep the position after the loop has ended
+    var i = 0;
+    // check for valid selection literal, WITHOUT causing a nasty error when it's unfinished,
+    // eg ending with 'thru'
+    for (; i < _commands.length; i++) {
+      if (i != 0) {
+        if (!['-', '='].contains(_commands[i])) {
+          break;
         }
-        current = _commands[i];
+      }
+      if (++i > _commands.length - 1) return;
+      if (!_commands[i].isInt) {
+        _setError(i);
+        return;
+      }
+      // break instead of return bc this may be incomplete, but it's parseable, so
+      // we want to tell the user if their selection is gonna be valid or not
+      if (++i > _commands.length - 1) break;
+      if (_commands[i] == 't') {
+        if (++i > _commands.length - 1) return;
+        if (!_commands[i].isInt) {
+          _setError(i);
+          return;
+        }
+      } else {
+        i--;
       }
     }
-    if (current != null) actions.add(Tuple2(current, null));
 
-    final objects = _objects(selectionType, selection);
+    // we've (hopefully) returned if we're halfway through a selection literal,
+    // so let's hope there's a valid one!
+    selection = getSelection(_commands.sublist(1));
+    if (!_selectionValid()) {
+      error = 'Invalid ${objectType!.name}';
+      return;
+    }
 
-    for (var action in actions) {
-      switch (selectionType) {
-        case 'c': {
-          for (var channel in objects.asType<Channel?>()) {
-            switch (action.item1) {
-              case 'l': {
-                channel?.setValue(Parameter.Intensity, action.item2!.toInt());
+    if (i > _commands.length - 1) return;
+    
+    // check for method or property literal
+    if (objectType!.methods.containsKey(_displayName(_commands[i]))) {
+      if (i != _commands.length - 1) {
+        _setError(i + 1);
+      } else {
+        method = objectType!.methods[_displayName(_commands[i])]!;
+      }
+      return;
+    }
+
+    const specialValues = <String, double>{
+      'a': -1,
+      'i': -2
+    };
+
+    for (; i < _commands.length; i++) {
+      final commandName = _displayName(_commands[i]);
+      if (!objectType!.properties.containsKey(commandName)) {
+        _setError(i);
+        return;
+      }
+      if (++i > _commands.length - 1) return;
+      if (_commands[i].isNumeric || specialValues.containsKey(_commands[i])) {
+        if (!objectType!.properties[commandName]!.canSet) {
+          _setError(i);
+          return;
+        } else {
+          properties ??= {};
+          final val = _commands[i].isNumeric ? double.parse(_commands[i]) : specialValues[_commands[i]]!;
+          properties![objectType!.properties[commandName]!] = val;
+          i++;
+        }
+      } else if (objectType!.properties.containsKey(_commands[i])) {
+        properties ??= {};
+        properties![objectType!.properties[commandName]!] = null;
+      } else {
+        _setError(i);
+        return;
+      }
+    }
+
+  }
+
+  /// assumes [objectType] and [selection] are non-null
+  bool _selectionValid() {
+    switch (objectType!) {
+      case obj_Channel: {
+        for (var i in selection!) {
+          if (!BeansEngine.dmx.channels.containsKey(i)) return false;
+        }
+        return true;
+      }
+    }
+    // unreachable
+    return false;
+  }
+
+  Map<String, dynamic>? execute() {
+    if (isExecuted || error != null) return null;
+
+    Map<String, dynamic>? out;
+
+    switch (objectType!) {
+      case obj_Channel: {
+        for (var i in selection!) {
+          final chan = BeansEngine.dmx.channels[i]!;
+          for (var prop in properties!.entries) {
+            final param = Parameter.values.firstWhere((param) => param.name == prop.key.name);
+            if (prop.value == null) {
+              out ??= {};
+              out[param.name] = chan.getValue(param);
+            } else {
+              var val = prop.value!;
+              if (val == -1) {
+                val = chan.fixture.getInfo(param).max;
+              } else if (val == -2) {
+                val = chan.fixture.getInfo(param).min;
               }
+              chan.setValue(param, val);
             }
           }
         }
@@ -208,6 +292,7 @@ class CommandLine {
     }
 
     isExecuted = true;
+    return out;
   }
 
   @override
@@ -215,11 +300,7 @@ class CommandLine {
     var out = '';
     if (_commands.isEmpty) return out;
     for (var token in _commands) {
-      if (token.isNumeric) {
-        out += token;
-      } else {
-        out += commandNames[token]!;
-      }
+      out += _displayName(token) ?? token;
       out += ' ';
     }
     return out.substring(0, out.length - 1);
