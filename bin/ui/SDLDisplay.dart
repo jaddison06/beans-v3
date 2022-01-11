@@ -8,7 +8,7 @@ class SDLDisplay extends SDLDisplayRaw implements Display {
   @override
   V2 get size => V2.fromPointers(GetSize);
 
-  SDLDisplay(String title, {bool fullscreen = false}) : super(title, fullscreen);
+  SDLDisplay(String title, {bool fullscreen = true}) : super(title, fullscreen);
 
   @override
   void SetClip(V2 pos, V2 size) {

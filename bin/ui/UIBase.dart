@@ -132,10 +132,20 @@ class UIBase extends Renderable {
     for (var win in _windows) {
       if (hit.containedBy(
         _windowPos(win, pos, constraints) + V2(0, blockSize.y),
-        (win.size - 1) * blockSize
+        (win.size - V2(0, 1)) * blockSize
       )) return win;
     }
   }
+
+  bool _isOverlap(V2 aPos, V2 aSize, V2 bPos, V2 bSize) {
+    if (aPos.containedBy(bPos, bSize)) return true;
+    if ((aPos + V2(aSize.x, 0)).containedBy(bPos, bSize)) return true;
+    if ((aPos + V2(0, aSize.y)).containedBy(bPos, bSize)) return true;
+    if ((aPos + aSize).containedBy(bPos, bSize)) return true;
+    return false;
+  }
+
+  
 
   @override
   void render(Display display, V2 pos, V2 constraints) {
@@ -148,7 +158,7 @@ class UIBase extends Renderable {
     display.SetClip(windowAreaPos, windowAreaSize);
 
     // todo: blockSize is still slightly suspect, could just be float precision wank. TEST!
-    final blockSize = _getBlockSize(windowAreaSize);
+    final blockSize = _getBlockSize(constraints);
 
     for (var x = 0; x <= windowAreaSize.x; x += blockSize.x) {
       for (var y = 0; y <= windowAreaSize.y; y += blockSize.y) {
@@ -213,7 +223,7 @@ class UIBase extends Renderable {
         V2 newPos;
         V2 newSize;
         if (group != null) {
-          newPos = group.pos * _getBlockSize(constraints);
+          newPos = _windowPos(group, pos, constraints);
           newSize = group.size * _getBlockSize(constraints);
         } else {
           newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
