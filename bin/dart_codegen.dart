@@ -5,7 +5,121 @@ import 'package:ffi/ffi.dart';
 // for @mustCallSuper
 import 'package:meta/meta.dart';
 
-// ----------FILE: NATIVE/UI/EVENTS.GEN----------
+// ----------FILE: NATIVE\3RDPARTY\LIBE131\E131.GEN----------
+
+// ----------ENUMS----------
+
+enum BeansE131ErrorCode {
+    success,
+    socket,
+    source_name,
+    unicast_dest,
+}
+
+BeansE131ErrorCode BeansE131ErrorCodeFromInt(int val) => BeansE131ErrorCode.values[val];
+int BeansE131ErrorCodeToInt(BeansE131ErrorCode val) => BeansE131ErrorCode.values.indexOf(val);
+
+String BeansE131ErrorCodeToString(BeansE131ErrorCode val) {
+    switch (val) {
+        case BeansE131ErrorCode.success: { return 'success'; }
+        case BeansE131ErrorCode.socket: { return 'e131_socket() failed'; }
+        case BeansE131ErrorCode.source_name: { return 'Source name was too long'; }
+        case BeansE131ErrorCode.unicast_dest: { return 'e131_unicast_dest() failed'; }
+    }
+}
+
+// ----------FUNC SIG TYPEDEFS FOR CLASSES----------
+
+// ----------E131----------
+
+// void* BeansE131Init(char* source_name, char* dest, u16 universe)
+typedef _libe131_class_E131_method_BeansE131Init_native_sig = Pointer<Void> Function(Pointer<Utf8>, Pointer<Utf8>, Uint16);
+typedef _libe131_class_E131_method_BeansE131Init_sig = Pointer<Void> Function(Pointer<Utf8>, Pointer<Utf8>, int);
+
+// BeansE131ErrorCode BeansE131GetError(void* struct_ptr)
+typedef _libe131_class_E131_method_BeansE131GetError_native_sig = Int32 Function(Pointer<Void>);
+typedef _libe131_class_E131_method_BeansE131GetError_sig = int Function(Pointer<Void>);
+
+// void BeansE131Print(void* struct_ptr)
+typedef _libe131_class_E131_method_BeansE131Print_native_sig = Void Function(Pointer<Void>);
+typedef _libe131_class_E131_method_BeansE131Print_sig = void Function(Pointer<Void>);
+
+// void BeansE131SetValue(void* struct_ptr, u16 channel, u8 value)
+typedef _libe131_class_E131_method_BeansE131SetValue_native_sig = Void Function(Pointer<Void>, Uint16, Uint8);
+typedef _libe131_class_E131_method_BeansE131SetValue_sig = void Function(Pointer<Void>, int, int);
+
+// bool BeansE131Send(void* struct_ptr)
+typedef _libe131_class_E131_method_BeansE131Send_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libe131_class_E131_method_BeansE131Send_sig = int Function(Pointer<Void>);
+
+// ----------CLASS IMPLEMENTATIONS----------
+
+class E131 {
+    Pointer<Void> structPointer = nullptr;
+
+    void _validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('E131.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    static _libe131_class_E131_method_BeansE131Init_sig? _BeansE131Init;
+    static _libe131_class_E131_method_BeansE131GetError_sig? _BeansE131GetError;
+    static _libe131_class_E131_method_BeansE131Print_sig? _BeansE131Print;
+    static _libe131_class_E131_method_BeansE131SetValue_sig? _BeansE131SetValue;
+    static _libe131_class_E131_method_BeansE131Send_sig? _BeansE131Send;
+
+    void _initRefs() {
+        if (
+            _BeansE131Init == null ||
+            _BeansE131GetError == null ||
+            _BeansE131Print == null ||
+            _BeansE131SetValue == null ||
+            _BeansE131Send == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/3rdparty/libe131/libe131.dll');
+
+            _BeansE131Init = lib.lookupFunction<_libe131_class_E131_method_BeansE131Init_native_sig, _libe131_class_E131_method_BeansE131Init_sig>('BeansE131Init');
+            _BeansE131GetError = lib.lookupFunction<_libe131_class_E131_method_BeansE131GetError_native_sig, _libe131_class_E131_method_BeansE131GetError_sig>('BeansE131GetError');
+            _BeansE131Print = lib.lookupFunction<_libe131_class_E131_method_BeansE131Print_native_sig, _libe131_class_E131_method_BeansE131Print_sig>('BeansE131Print');
+            _BeansE131SetValue = lib.lookupFunction<_libe131_class_E131_method_BeansE131SetValue_native_sig, _libe131_class_E131_method_BeansE131SetValue_sig>('BeansE131SetValue');
+            _BeansE131Send = lib.lookupFunction<_libe131_class_E131_method_BeansE131Send_native_sig, _libe131_class_E131_method_BeansE131Send_sig>('BeansE131Send');
+        }
+    }
+
+    E131(String source_name, String dest, int universe) {
+        _initRefs();
+        structPointer = _BeansE131Init!(source_name.toNativeUtf8(), dest.toNativeUtf8(), universe);
+    }
+
+    E131.fromPointer(Pointer<Void> ptr) {
+        _initRefs();
+        structPointer = ptr;
+    }
+
+    BeansE131ErrorCode get error {
+        _validatePointer('error');
+        return BeansE131ErrorCodeFromInt(_BeansE131GetError!(structPointer));
+    }
+
+    void Print() {
+        _validatePointer('BeansE131Print');
+        return _BeansE131Print!(structPointer);
+    }
+
+    void SetValue(int channel, int value) {
+        _validatePointer('BeansE131SetValue');
+        return _BeansE131SetValue!(structPointer, channel, value);
+    }
+
+    bool Send() {
+        _validatePointer('BeansE131Send');
+        return (_BeansE131Send!(structPointer)) == 1;
+    }
+
+}
+
+// ----------FILE: NATIVE\UI\EVENTS.GEN----------
 
 // ----------ENUMS----------
 
@@ -125,309 +239,7 @@ String KeyToString(Key val) {
     }
 }
 
-// ----------FILE: NATIVE/UI/SDL/SDLEVENT.GEN----------
-
-// ----------FUNC SIG TYPEDEFS FOR CLASSES----------
-
-// ----------SDLEVENTRAW----------
-
-// void* SEInit()
-typedef _libSDLEvent_class_SDLEventRaw_method_SEInit_native_sig = Pointer<Void> Function();
-typedef _libSDLEvent_class_SDLEventRaw_method_SEInit_sig = Pointer<Void> Function();
-
-// void SEDestroy(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig = Void Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig = void Function(Pointer<Void>);
-
-// void SEGetPos(void* struct_ptr, int* x, int* y)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
-
-// Key SEGetKey(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig = Int32 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig = int Function(Pointer<Void>);
-
-// char* SEGetText(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig = Pointer<Utf8> Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig = Pointer<Utf8> Function(Pointer<Void>);
-
-// MouseButton SEGetMouseButton(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig = Int32 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig = int Function(Pointer<Void>);
-
-// EventType SEGetType(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig = Int32 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig = int Function(Pointer<Void>);
-
-// bool SEHasShift(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig = Uint8 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig = int Function(Pointer<Void>);
-
-// bool SEHasControl(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig = Uint8 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig = int Function(Pointer<Void>);
-
-// bool SEHasAlt(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig = Uint8 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig = int Function(Pointer<Void>);
-
-// bool SEHasCaps(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig = Uint8 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig = int Function(Pointer<Void>);
-
-// int SEPoll(void* struct_ptr)
-typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig = Int32 Function(Pointer<Void>);
-typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig = int Function(Pointer<Void>);
-
-// ----------CLASS IMPLEMENTATIONS----------
-
-class SDLEventRaw {
-    Pointer<Void> structPointer = nullptr;
-
-    void _validatePointer(String methodName) {
-        if (structPointer.address == 0) {
-            throw Exception('SDLEventRaw.$methodName was called, but structPointer is a nullptr.');
-        }
-    }
-
-    static _libSDLEvent_class_SDLEventRaw_method_SEInit_sig? _SEInit;
-    static _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig? _SEDestroy;
-    static _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig? _SEGetPos;
-    static _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig? _SEGetKey;
-    static _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig? _SEGetText;
-    static _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig? _SEGetMouseButton;
-    static _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig? _SEGetType;
-    static _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig? _SEHasShift;
-    static _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig? _SEHasControl;
-    static _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig? _SEHasAlt;
-    static _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig? _SEHasCaps;
-    static _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig? _SEPoll;
-
-    void _initRefs() {
-        if (
-            _SEInit == null ||
-            _SEDestroy == null ||
-            _SEGetPos == null ||
-            _SEGetKey == null ||
-            _SEGetText == null ||
-            _SEGetMouseButton == null ||
-            _SEGetType == null ||
-            _SEHasShift == null ||
-            _SEHasControl == null ||
-            _SEHasAlt == null ||
-            _SEHasCaps == null ||
-            _SEPoll == null
-        ) {
-            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLEvent.so');
-
-            _SEInit = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEInit_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEInit_sig>('SEInit');
-            _SEDestroy = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig>('SEDestroy');
-            _SEGetPos = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig>('SEGetPos');
-            _SEGetKey = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig>('SEGetKey');
-            _SEGetText = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig>('SEGetText');
-            _SEGetMouseButton = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig>('SEGetMouseButton');
-            _SEGetType = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig>('SEGetType');
-            _SEHasShift = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig>('SEHasShift');
-            _SEHasControl = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig>('SEHasControl');
-            _SEHasAlt = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig>('SEHasAlt');
-            _SEHasCaps = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig>('SEHasCaps');
-            _SEPoll = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig>('SEPoll');
-        }
-    }
-
-    SDLEventRaw() {
-        _initRefs();
-        structPointer = _SEInit!();
-    }
-
-    SDLEventRaw.fromPointer(Pointer<Void> ptr) {
-        _initRefs();
-        structPointer = ptr;
-    }
-
-    @mustCallSuper
-    void Destroy() {
-        _validatePointer('SEDestroy');
-        final out = _SEDestroy!(structPointer);
-
-        // this method invalidates the pointer, probably by freeing memory
-        structPointer = nullptr;
-
-        return out;
-    }
-
-    void GetPos(Pointer<Int32> x, Pointer<Int32> y) {
-        _validatePointer('SEGetPos');
-        return _SEGetPos!(structPointer, x, y);
-    }
-
-    Key get key {
-        _validatePointer('key');
-        return KeyFromInt(_SEGetKey!(structPointer));
-    }
-
-    String get text {
-        _validatePointer('text');
-        return (_SEGetText!(structPointer)).toDartString();
-    }
-
-    MouseButton get mouseButton {
-        _validatePointer('mouseButton');
-        return MouseButtonFromInt(_SEGetMouseButton!(structPointer));
-    }
-
-    EventType get type {
-        _validatePointer('type');
-        return EventTypeFromInt(_SEGetType!(structPointer));
-    }
-
-    bool HasShift() {
-        _validatePointer('SEHasShift');
-        return (_SEHasShift!(structPointer)) == 1;
-    }
-
-    bool HasControl() {
-        _validatePointer('SEHasControl');
-        return (_SEHasControl!(structPointer)) == 1;
-    }
-
-    bool HasAlt() {
-        _validatePointer('SEHasAlt');
-        return (_SEHasAlt!(structPointer)) == 1;
-    }
-
-    bool HasCaps() {
-        _validatePointer('SEHasCaps');
-        return (_SEHasCaps!(structPointer)) == 1;
-    }
-
-    int Poll() {
-        _validatePointer('SEPoll');
-        return _SEPoll!(structPointer);
-    }
-
-}
-
-// ----------FILE: NATIVE/UI/SDL/SDLFONT.GEN----------
-
-// ----------FUNCTION SIGNATURE TYPEDEFS----------
-
-// bool SFInit()
-typedef _libSDLFont_func_SFInit_native_sig = Uint8 Function();
-typedef _libSDLFont_func_SFInit_sig = int Function();
-
-// void SFQuit()
-typedef _libSDLFont_func_SFQuit_native_sig = Void Function();
-typedef _libSDLFont_func_SFQuit_sig = void Function();
-
-// ----------LIBSDLFONT----------
-
-class libSDLFont {
-
-    static _libSDLFont_func_SFInit_sig? _SFInit;
-    static _libSDLFont_func_SFQuit_sig? _SFQuit;
-
-    void _initRefs() {
-        if (
-            _SFInit == null ||
-            _SFQuit == null
-        ) {
-            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.so');
-
-            _SFInit = lib.lookupFunction<_libSDLFont_func_SFInit_native_sig, _libSDLFont_func_SFInit_sig>('SFInit');
-            _SFQuit = lib.lookupFunction<_libSDLFont_func_SFQuit_native_sig, _libSDLFont_func_SFQuit_sig>('SFQuit');
-        }
-    }
-
-    libSDLFont() {
-        _initRefs();
-    }
-
-    bool Init() {
-        return (_SFInit!()) == 1;
-    }
-
-    void Quit() {
-        return _SFQuit!();
-    }
-
-}
-
-
-// ----------FUNC SIG TYPEDEFS FOR CLASSES----------
-
-// ----------SDLFONTRAW----------
-
-// void* SFCreate(char* family, int size)
-typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig = Pointer<Void> Function(Pointer<Utf8>, Int32);
-typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_sig = Pointer<Void> Function(Pointer<Utf8>, int);
-
-// void SFDestroy(void* struct_ptr)
-typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig = Void Function(Pointer<Void>);
-typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig = void Function(Pointer<Void>);
-
-// void SFGetTextSize(void* struct_ptr, char* text, int* width, int* height)
-typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig = Void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
-typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig = void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
-
-// ----------CLASS IMPLEMENTATIONS----------
-
-class SDLFontRaw {
-    Pointer<Void> structPointer = nullptr;
-
-    void _validatePointer(String methodName) {
-        if (structPointer.address == 0) {
-            throw Exception('SDLFontRaw.$methodName was called, but structPointer is a nullptr.');
-        }
-    }
-
-    static _libSDLFont_class_SDLFontRaw_method_SFCreate_sig? _SFCreate;
-    static _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig? _SFDestroy;
-    static _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig? _SFGetTextSize;
-
-    void _initRefs() {
-        if (
-            _SFCreate == null ||
-            _SFDestroy == null ||
-            _SFGetTextSize == null
-        ) {
-            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.so');
-
-            _SFCreate = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig, _libSDLFont_class_SDLFontRaw_method_SFCreate_sig>('SFCreate');
-            _SFDestroy = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig, _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig>('SFDestroy');
-            _SFGetTextSize = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig, _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig>('SFGetTextSize');
-        }
-    }
-
-    SDLFontRaw(String family, int size) {
-        _initRefs();
-        structPointer = _SFCreate!(family.toNativeUtf8(), size);
-    }
-
-    SDLFontRaw.fromPointer(Pointer<Void> ptr) {
-        _initRefs();
-        structPointer = ptr;
-    }
-
-    @mustCallSuper
-    void Destroy() {
-        _validatePointer('SFDestroy');
-        final out = _SFDestroy!(structPointer);
-
-        // this method invalidates the pointer, probably by freeing memory
-        structPointer = nullptr;
-
-        return out;
-    }
-
-    void GetTextSize(String text, Pointer<Int32> width, Pointer<Int32> height) {
-        _validatePointer('SFGetTextSize');
-        return _SFGetTextSize!(structPointer, text.toNativeUtf8(), width, height);
-    }
-
-}
-
-// ----------FILE: NATIVE/UI/SDL/SDLDISPLAY.GEN----------
+// ----------FILE: NATIVE\UI\SDL\SDLDISPLAY.GEN----------
 
 // ----------ENUMS----------
 
@@ -553,7 +365,7 @@ class SDLDisplayRaw {
             _SDFillCircle == null ||
             _SDDrawText == null
         ) {
-            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLDisplay.so');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLDisplay.dll');
 
             _SDInit = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDInit_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDInit_sig>('SDInit');
             _SDGetErrorCode = lib.lookupFunction<_libSDLDisplay_class_SDLDisplayRaw_method_SDGetErrorCode_native_sig, _libSDLDisplay_class_SDLDisplayRaw_method_SDGetErrorCode_sig>('SDGetErrorCode');
@@ -655,116 +467,304 @@ class SDLDisplayRaw {
 
 }
 
-// ----------FILE: NATIVE/3RDPARTY/LIBE131/E131.GEN----------
-
-// ----------ENUMS----------
-
-enum BeansE131ErrorCode {
-    success,
-    socket,
-    source_name,
-    unicast_dest,
-}
-
-BeansE131ErrorCode BeansE131ErrorCodeFromInt(int val) => BeansE131ErrorCode.values[val];
-int BeansE131ErrorCodeToInt(BeansE131ErrorCode val) => BeansE131ErrorCode.values.indexOf(val);
-
-String BeansE131ErrorCodeToString(BeansE131ErrorCode val) {
-    switch (val) {
-        case BeansE131ErrorCode.success: { return 'success'; }
-        case BeansE131ErrorCode.socket: { return 'e131_socket() failed'; }
-        case BeansE131ErrorCode.source_name: { return 'Source name was too long'; }
-        case BeansE131ErrorCode.unicast_dest: { return 'e131_unicast_dest() failed'; }
-    }
-}
+// ----------FILE: NATIVE\UI\SDL\SDLEVENT.GEN----------
 
 // ----------FUNC SIG TYPEDEFS FOR CLASSES----------
 
-// ----------E131----------
+// ----------SDLEVENTRAW----------
 
-// void* BeansE131Init(char* source_name, char* dest, u16 universe)
-typedef _libe131_class_E131_method_BeansE131Init_native_sig = Pointer<Void> Function(Pointer<Utf8>, Pointer<Utf8>, Uint16);
-typedef _libe131_class_E131_method_BeansE131Init_sig = Pointer<Void> Function(Pointer<Utf8>, Pointer<Utf8>, int);
+// void* SEInit()
+typedef _libSDLEvent_class_SDLEventRaw_method_SEInit_native_sig = Pointer<Void> Function();
+typedef _libSDLEvent_class_SDLEventRaw_method_SEInit_sig = Pointer<Void> Function();
 
-// BeansE131ErrorCode BeansE131GetError(void* struct_ptr)
-typedef _libe131_class_E131_method_BeansE131GetError_native_sig = Int32 Function(Pointer<Void>);
-typedef _libe131_class_E131_method_BeansE131GetError_sig = int Function(Pointer<Void>);
+// void SEDestroy(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig = Void Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig = void Function(Pointer<Void>);
 
-// void BeansE131Print(void* struct_ptr)
-typedef _libe131_class_E131_method_BeansE131Print_native_sig = Void Function(Pointer<Void>);
-typedef _libe131_class_E131_method_BeansE131Print_sig = void Function(Pointer<Void>);
+// void SEGetPos(void* struct_ptr, int* x, int* y)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 
-// void BeansE131SetValue(void* struct_ptr, u16 channel, u8 value)
-typedef _libe131_class_E131_method_BeansE131SetValue_native_sig = Void Function(Pointer<Void>, Uint16, Uint8);
-typedef _libe131_class_E131_method_BeansE131SetValue_sig = void Function(Pointer<Void>, int, int);
+// Key SEGetKey(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig = Int32 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig = int Function(Pointer<Void>);
 
-// bool BeansE131Send(void* struct_ptr)
-typedef _libe131_class_E131_method_BeansE131Send_native_sig = Uint8 Function(Pointer<Void>);
-typedef _libe131_class_E131_method_BeansE131Send_sig = int Function(Pointer<Void>);
+// char* SEGetText(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig = Pointer<Utf8> Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig = Pointer<Utf8> Function(Pointer<Void>);
+
+// MouseButton SEGetMouseButton(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig = Int32 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig = int Function(Pointer<Void>);
+
+// EventType SEGetType(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig = Int32 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig = int Function(Pointer<Void>);
+
+// bool SEHasShift(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig = int Function(Pointer<Void>);
+
+// bool SEHasControl(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig = int Function(Pointer<Void>);
+
+// bool SEHasAlt(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig = int Function(Pointer<Void>);
+
+// bool SEHasCaps(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig = Uint8 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig = int Function(Pointer<Void>);
+
+// int SEPoll(void* struct_ptr)
+typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig = Int32 Function(Pointer<Void>);
+typedef _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig = int Function(Pointer<Void>);
 
 // ----------CLASS IMPLEMENTATIONS----------
 
-class E131 {
+class SDLEventRaw {
     Pointer<Void> structPointer = nullptr;
 
     void _validatePointer(String methodName) {
         if (structPointer.address == 0) {
-            throw Exception('E131.$methodName was called, but structPointer is a nullptr.');
+            throw Exception('SDLEventRaw.$methodName was called, but structPointer is a nullptr.');
         }
     }
 
-    static _libe131_class_E131_method_BeansE131Init_sig? _BeansE131Init;
-    static _libe131_class_E131_method_BeansE131GetError_sig? _BeansE131GetError;
-    static _libe131_class_E131_method_BeansE131Print_sig? _BeansE131Print;
-    static _libe131_class_E131_method_BeansE131SetValue_sig? _BeansE131SetValue;
-    static _libe131_class_E131_method_BeansE131Send_sig? _BeansE131Send;
+    static _libSDLEvent_class_SDLEventRaw_method_SEInit_sig? _SEInit;
+    static _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig? _SEDestroy;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig? _SEGetPos;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig? _SEGetKey;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig? _SEGetText;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig? _SEGetMouseButton;
+    static _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig? _SEGetType;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig? _SEHasShift;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig? _SEHasControl;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig? _SEHasAlt;
+    static _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig? _SEHasCaps;
+    static _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig? _SEPoll;
 
     void _initRefs() {
         if (
-            _BeansE131Init == null ||
-            _BeansE131GetError == null ||
-            _BeansE131Print == null ||
-            _BeansE131SetValue == null ||
-            _BeansE131Send == null
+            _SEInit == null ||
+            _SEDestroy == null ||
+            _SEGetPos == null ||
+            _SEGetKey == null ||
+            _SEGetText == null ||
+            _SEGetMouseButton == null ||
+            _SEGetType == null ||
+            _SEHasShift == null ||
+            _SEHasControl == null ||
+            _SEHasAlt == null ||
+            _SEHasCaps == null ||
+            _SEPoll == null
         ) {
-            final lib = DynamicLibrary.open('build/native/3rdparty/libe131/libe131.so');
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLEvent.dll');
 
-            _BeansE131Init = lib.lookupFunction<_libe131_class_E131_method_BeansE131Init_native_sig, _libe131_class_E131_method_BeansE131Init_sig>('BeansE131Init');
-            _BeansE131GetError = lib.lookupFunction<_libe131_class_E131_method_BeansE131GetError_native_sig, _libe131_class_E131_method_BeansE131GetError_sig>('BeansE131GetError');
-            _BeansE131Print = lib.lookupFunction<_libe131_class_E131_method_BeansE131Print_native_sig, _libe131_class_E131_method_BeansE131Print_sig>('BeansE131Print');
-            _BeansE131SetValue = lib.lookupFunction<_libe131_class_E131_method_BeansE131SetValue_native_sig, _libe131_class_E131_method_BeansE131SetValue_sig>('BeansE131SetValue');
-            _BeansE131Send = lib.lookupFunction<_libe131_class_E131_method_BeansE131Send_native_sig, _libe131_class_E131_method_BeansE131Send_sig>('BeansE131Send');
+            _SEInit = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEInit_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEInit_sig>('SEInit');
+            _SEDestroy = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEDestroy_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEDestroy_sig>('SEDestroy');
+            _SEGetPos = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetPos_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetPos_sig>('SEGetPos');
+            _SEGetKey = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetKey_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetKey_sig>('SEGetKey');
+            _SEGetText = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetText_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetText_sig>('SEGetText');
+            _SEGetMouseButton = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetMouseButton_sig>('SEGetMouseButton');
+            _SEGetType = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEGetType_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEGetType_sig>('SEGetType');
+            _SEHasShift = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasShift_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasShift_sig>('SEHasShift');
+            _SEHasControl = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasControl_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasControl_sig>('SEHasControl');
+            _SEHasAlt = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasAlt_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasAlt_sig>('SEHasAlt');
+            _SEHasCaps = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEHasCaps_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEHasCaps_sig>('SEHasCaps');
+            _SEPoll = lib.lookupFunction<_libSDLEvent_class_SDLEventRaw_method_SEPoll_native_sig, _libSDLEvent_class_SDLEventRaw_method_SEPoll_sig>('SEPoll');
         }
     }
 
-    E131(String source_name, String dest, int universe) {
+    SDLEventRaw() {
         _initRefs();
-        structPointer = _BeansE131Init!(source_name.toNativeUtf8(), dest.toNativeUtf8(), universe);
+        structPointer = _SEInit!();
     }
 
-    E131.fromPointer(Pointer<Void> ptr) {
+    SDLEventRaw.fromPointer(Pointer<Void> ptr) {
         _initRefs();
         structPointer = ptr;
     }
 
-    BeansE131ErrorCode get error {
-        _validatePointer('error');
-        return BeansE131ErrorCodeFromInt(_BeansE131GetError!(structPointer));
+    @mustCallSuper
+    void Destroy() {
+        _validatePointer('SEDestroy');
+        final out = _SEDestroy!(structPointer);
+
+        // this method invalidates the pointer, probably by freeing memory
+        structPointer = nullptr;
+
+        return out;
     }
 
-    void Print() {
-        _validatePointer('BeansE131Print');
-        return _BeansE131Print!(structPointer);
+    void GetPos(Pointer<Int32> x, Pointer<Int32> y) {
+        _validatePointer('SEGetPos');
+        return _SEGetPos!(structPointer, x, y);
     }
 
-    void SetValue(int channel, int value) {
-        _validatePointer('BeansE131SetValue');
-        return _BeansE131SetValue!(structPointer, channel, value);
+    Key get key {
+        _validatePointer('key');
+        return KeyFromInt(_SEGetKey!(structPointer));
     }
 
-    bool Send() {
-        _validatePointer('BeansE131Send');
-        return (_BeansE131Send!(structPointer)) == 1;
+    String get text {
+        _validatePointer('text');
+        return (_SEGetText!(structPointer)).toDartString();
+    }
+
+    MouseButton get mouseButton {
+        _validatePointer('mouseButton');
+        return MouseButtonFromInt(_SEGetMouseButton!(structPointer));
+    }
+
+    EventType get type {
+        _validatePointer('type');
+        return EventTypeFromInt(_SEGetType!(structPointer));
+    }
+
+    bool HasShift() {
+        _validatePointer('SEHasShift');
+        return (_SEHasShift!(structPointer)) == 1;
+    }
+
+    bool HasControl() {
+        _validatePointer('SEHasControl');
+        return (_SEHasControl!(structPointer)) == 1;
+    }
+
+    bool HasAlt() {
+        _validatePointer('SEHasAlt');
+        return (_SEHasAlt!(structPointer)) == 1;
+    }
+
+    bool HasCaps() {
+        _validatePointer('SEHasCaps');
+        return (_SEHasCaps!(structPointer)) == 1;
+    }
+
+    int Poll() {
+        _validatePointer('SEPoll');
+        return _SEPoll!(structPointer);
+    }
+
+}
+
+// ----------FILE: NATIVE\UI\SDL\SDLFONT.GEN----------
+
+// ----------FUNCTION SIGNATURE TYPEDEFS----------
+
+// bool SFInit()
+typedef _libSDLFont_func_SFInit_native_sig = Uint8 Function();
+typedef _libSDLFont_func_SFInit_sig = int Function();
+
+// void SFQuit()
+typedef _libSDLFont_func_SFQuit_native_sig = Void Function();
+typedef _libSDLFont_func_SFQuit_sig = void Function();
+
+// ----------LIBSDLFONT----------
+
+class libSDLFont {
+
+    static _libSDLFont_func_SFInit_sig? _SFInit;
+    static _libSDLFont_func_SFQuit_sig? _SFQuit;
+
+    void _initRefs() {
+        if (
+            _SFInit == null ||
+            _SFQuit == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
+
+            _SFInit = lib.lookupFunction<_libSDLFont_func_SFInit_native_sig, _libSDLFont_func_SFInit_sig>('SFInit');
+            _SFQuit = lib.lookupFunction<_libSDLFont_func_SFQuit_native_sig, _libSDLFont_func_SFQuit_sig>('SFQuit');
+        }
+    }
+
+    libSDLFont() {
+        _initRefs();
+    }
+
+    bool Init() {
+        return (_SFInit!()) == 1;
+    }
+
+    void Quit() {
+        return _SFQuit!();
+    }
+
+}
+
+
+// ----------FUNC SIG TYPEDEFS FOR CLASSES----------
+
+// ----------SDLFONTRAW----------
+
+// void* SFCreate(char* family, int size)
+typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig = Pointer<Void> Function(Pointer<Utf8>, Int32);
+typedef _libSDLFont_class_SDLFontRaw_method_SFCreate_sig = Pointer<Void> Function(Pointer<Utf8>, int);
+
+// void SFDestroy(void* struct_ptr)
+typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig = Void Function(Pointer<Void>);
+typedef _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig = void Function(Pointer<Void>);
+
+// void SFGetTextSize(void* struct_ptr, char* text, int* width, int* height)
+typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig = Void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
+typedef _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig = void Function(Pointer<Void>, Pointer<Utf8>, Pointer<Int32>, Pointer<Int32>);
+
+// ----------CLASS IMPLEMENTATIONS----------
+
+class SDLFontRaw {
+    Pointer<Void> structPointer = nullptr;
+
+    void _validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('SDLFontRaw.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    static _libSDLFont_class_SDLFontRaw_method_SFCreate_sig? _SFCreate;
+    static _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig? _SFDestroy;
+    static _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig? _SFGetTextSize;
+
+    void _initRefs() {
+        if (
+            _SFCreate == null ||
+            _SFDestroy == null ||
+            _SFGetTextSize == null
+        ) {
+            final lib = DynamicLibrary.open('build/native/ui/SDL/libSDLFont.dll');
+
+            _SFCreate = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFCreate_native_sig, _libSDLFont_class_SDLFontRaw_method_SFCreate_sig>('SFCreate');
+            _SFDestroy = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFDestroy_native_sig, _libSDLFont_class_SDLFontRaw_method_SFDestroy_sig>('SFDestroy');
+            _SFGetTextSize = lib.lookupFunction<_libSDLFont_class_SDLFontRaw_method_SFGetTextSize_native_sig, _libSDLFont_class_SDLFontRaw_method_SFGetTextSize_sig>('SFGetTextSize');
+        }
+    }
+
+    SDLFontRaw(String family, int size) {
+        _initRefs();
+        structPointer = _SFCreate!(family.toNativeUtf8(), size);
+    }
+
+    SDLFontRaw.fromPointer(Pointer<Void> ptr) {
+        _initRefs();
+        structPointer = ptr;
+    }
+
+    @mustCallSuper
+    void Destroy() {
+        _validatePointer('SFDestroy');
+        final out = _SFDestroy!(structPointer);
+
+        // this method invalidates the pointer, probably by freeing memory
+        structPointer = nullptr;
+
+        return out;
+    }
+
+    void GetTextSize(String text, Pointer<Int32> width, Pointer<Int32> height) {
+        _validatePointer('SFGetTextSize');
+        return _SFGetTextSize!(structPointer, text.toNativeUtf8(), width, height);
     }
 
 }

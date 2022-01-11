@@ -6,9 +6,18 @@ typedef char BEANS_BOOL;
 #define TRUE 1
 #define FALSE 0
 
-#define BEANS_LINUX
+#define BEANS_WINDOWS
 
-// ----------NATIVE/UI/EVENTS.GEN----------
+// ----------NATIVE\3RDPARTY\LIBE131\E131.GEN----------
+
+typedef enum {
+    BeansE131ErrorCode_success = 0,
+    BeansE131ErrorCode_socket = 1,
+    BeansE131ErrorCode_source_name = 2,
+    BeansE131ErrorCode_unicast_dest = 3,
+} BeansE131ErrorCode;
+
+// ----------NATIVE\UI\EVENTS.GEN----------
 
 typedef enum {
     EventType_None = 0,
@@ -58,11 +67,7 @@ typedef enum {
     Key_Unknown = 20,
 } Key;
 
-// ----------NATIVE/UI/SDL/SDLEVENT.GEN----------
-
-// ----------NATIVE/UI/SDL/SDLFONT.GEN----------
-
-// ----------NATIVE/UI/SDL/SDLDISPLAY.GEN----------
+// ----------NATIVE\UI\SDL\SDLDISPLAY.GEN----------
 
 typedef enum {
     SDLInitErrorCode_Success = 0,
@@ -71,13 +76,8 @@ typedef enum {
     SDLInitErrorCode_CreateRenderer_Fail = 3,
 } SDLInitErrorCode;
 
-// ----------NATIVE/3RDPARTY/LIBE131/E131.GEN----------
+// ----------NATIVE\UI\SDL\SDLEVENT.GEN----------
 
-typedef enum {
-    BeansE131ErrorCode_success = 0,
-    BeansE131ErrorCode_socket = 1,
-    BeansE131ErrorCode_source_name = 2,
-    BeansE131ErrorCode_unicast_dest = 3,
-} BeansE131ErrorCode;
+// ----------NATIVE\UI\SDL\SDLFONT.GEN----------
 
 #endif // C_CODEGEN_H

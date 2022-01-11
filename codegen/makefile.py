@@ -53,6 +53,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
 
         libs.append(lib_name)
 
+    release_executable = f'build/release/beans{executable_extension()}'
     
     # there's a directory called codegen, so we have to use .PHONY to
     # tell make to use the rule called 'codegen' instead of the directory
@@ -71,7 +72,7 @@ def codegen(files: list[ParsedGenFile]) -> str:
             mkdir('build/release'),
             copy_dir(f'build/{get_config(ConfigField.c_source_dir)}', f'build/release/{get_config(ConfigField.c_source_dir)}'),
             f'{get_config(ConfigField.python)} codegen/release_readme.py',
-            f'dart compile exe bin/beans.dart -o build/release/beans{executable_extension()}'
+            f'dart compile exe bin/beans.dart -o {release_executable}'
         ]
     ) + generate_makefile_item(
         'libraries',
@@ -97,6 +98,14 @@ def codegen(files: list[ParsedGenFile]) -> str:
         [
             'dart run'
             #'dart run --enable-vm-service'
+        ]
+    ) + generate_makefile_item(
+        'run-release',
+        [
+            'release'
+        ],
+        [
+            release_executable
         ]
     ) + generate_makefile_item(
         'clean',
