@@ -12,9 +12,6 @@ build/
 codegen.yaml
 
 codegen/__pycache__/
-
 native/c_codegen.h
-
 bin/dart_codegen.dart
-
 Makefile
