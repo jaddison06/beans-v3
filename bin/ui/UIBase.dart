@@ -50,6 +50,19 @@ class UIBase extends Renderable {
   final _keyboardFocus = Stack<_WindowInfo>();
   _WindowInfo? _mouseDownReceiver;
 
+  // If modifyState isn't None, _modifyWin is the window being modified,
+  // and modifyCurrent is the current mouse pos.
+
+  // Move:
+  //   - modifyStart is the mouse pos at the start of the drag
+  // Close:
+  //   - modifyStart is null
+  // Resize:
+  //   todo
+
+  /// Only set when [_modifyState] is None.
+  _WindowInfo? _closeHover;
+
   var _modifyState = _WMModifyState.None;
   _WindowInfo? _modifyWin;
   V2? _modifyStart;
@@ -81,6 +94,10 @@ class UIBase extends Renderable {
 
   V2 _windowPos(_WindowInfo win, V2 pos, V2 constraints) => pos + V2(0, topAreaHeight) + (win.pos * _getBlockSize(constraints));
 
+  V2 _closePos(_WindowInfo win, V2 pos, V2 constraints) =>
+    _windowPos(win, pos, constraints) +
+    V2((win.size.x - 1) * _getBlockSize(constraints).x, 0);
+
   _WindowInfo? _titlebarAt(V2 pos, V2 constraints, V2 hit) {
     final blockSize = _getBlockSize(constraints);
     for (var win in _windows) {
@@ -89,6 +106,15 @@ class UIBase extends Renderable {
         V2(win.size.x * blockSize.x, blockSize.y)
       )) return win;
     }
+  }
+
+  _WindowInfo? _closeButtonAt(V2 pos, V2 constraints, V2 hit) {
+    final win = _titlebarAt(pos, constraints, hit);
+    if (win == null) return null;
+    if (hit.containedBy(
+      _closePos(win, pos, constraints),
+      _getBlockSize(constraints) + V2(0, 1)
+    )) return win;
   }
 
   _WindowInfo? _windowAt(V2 pos, V2 constraints, V2 hit) {
@@ -140,6 +166,25 @@ class UIBase extends Renderable {
       display.FillRect(winPos, winSize, Colour.black);
       display.DrawRect(winPos, winSize, Colour.pink);
       display.DrawText(Fonts()[null][blockSize.y - 3], window.win.title, winPos + V2(10, 0), Colour.pink);
+
+      final closePos = _closePos(window, pos, constraints);
+      final closeCenter = closePos + (_getBlockSize(constraints) / 2);
+      final halfLength = 3;
+
+      Colour closeCol;
+
+      if (_closeHover == window) {
+        display.FillRect(closePos, _getBlockSize(constraints) + V2(0, 1), Colour.pink);
+        closeCol = Colour.black;
+      } else {
+        display.DrawRect(closePos, _getBlockSize(constraints) + V2(0, 1), Colour.pink);
+        closeCol = Colour.pink;
+      }
+      
+      display.DrawLine(closeCenter - V2.square(halfLength), closeCenter + V2.square(halfLength), closeCol);
+      display.DrawLine(closeCenter + V2(halfLength, -halfLength), closeCenter + V2(-halfLength, halfLength), closeCol);
+
+      display.DrawLine(contentPos, contentPos + V2(winSize.x, 0), Colour.pink);
       
       // todo: fucking strange SetClip behaviour
       //display.SetClip(contentPos, contentSize);
@@ -168,13 +213,37 @@ class UIBase extends Renderable {
   }
 
   void _executeModify(V2 pos, V2 constraints) {
+    switch (_modifyState) {
+      case _WMModifyState.Move: {
+        break;
+      }
+      case _WMModifyState.Close: {
+        break;
+      }
+      case _WMModifyState.Resize: {
+        break;
+      }
 
+      default: {}
+    }
   }
 
   void _winOnEvent(_WindowInfo win, Event event, V2 pos, V2 constraints) {
     win.win.onEvent(_windowPos(win, pos, constraints) + V2(0, _getBlockSize(constraints).y), event);
   }
 
+  // WM modify logic:
+  //   MouseDown:
+  //     - Set state
+  //     - Set window
+  //     - Maybe set start mouse pos
+  //     - Set current mouse pos
+  //   MouseMove:
+  //     - Set current mouse pos
+  //   MouseUp:
+  //     - Set current mouse pos (just to be sure)
+  //     - Execute
+  //     - Reset everything
   @override
   void onEvent(V2 pos, V2 constraints, Event event) {
     if (event.type == EventType.Key && event.key == Key.Escape) BeansEngine.quit();
@@ -209,53 +278,68 @@ class UIBase extends Renderable {
         BeansEngine.commandLine.addCommand(event.text);
         break;
       }
-      case EventType.MouseMove: {
-        switch (_modifyState) {
-          case _WMModifyState.None: {
-            final win = _windowAt(pos, constraints, event.pos);
-            if (win != null) _winOnEvent(win, event, pos, constraints);
-            break;
-          }
-          case _WMModifyState.Move: {
-            //_modifyCurrent
-            break;
-          }
-          default: {}
-        }
-        break;
-      }
       case EventType.MouseDown: {
         final win = _windowAt(pos, constraints, event.pos);
         if (win != null) {
           _winOnEvent(win, event, pos, constraints);
           _mouseDownReceiver = win;
-        } else {
-          // only gonna calculate this if we hit the else branch - it's expensive, and windows take priority
-          final tb = _titlebarAt(pos, constraints, event.pos);
-          if (tb != null) {
-            _modifyState = _WMModifyState.Move;
-            _modifyStart = event.pos;
-            _modifyWin = tb;
+          break;
+        }
+        final tb = _titlebarAt(pos, constraints, event.pos);
+        if (tb != null) {
+          final close = _closeButtonAt(pos, constraints, event.pos);
+          if (close != null) {
+            _modifyState = _WMModifyState.Close;
+            _modifyWin = close;
+            _modifyCurrent = event.pos;
           } else {
-            // clicked empty space - add window or smth
+            // check for cross
+            _modifyState = _WMModifyState.Move;
+            _modifyWin = tb;
+            _modifyStart = _modifyCurrent = event.pos;
           }
+        } else {
+          // clicked empty space - add window or smth
+        }
+        break;
+      }
+      case EventType.MouseMove: {
+        _closeHover = null;
+        if (_modifyState == _WMModifyState.None) {
+          if (_mouseDownReceiver != null) {
+            _winOnEvent(_mouseDownReceiver!, event, pos, constraints);
+            break;
+          }
+          var win = _windowAt(pos, constraints, event.pos);
+          if (win != null) {
+            _winOnEvent(win, event, pos, constraints);
+            break;
+          }
+          win = _closeButtonAt(pos, constraints, event.pos);
+          if (win != null) {
+            _closeHover = win;
+          }
+        } else {
+          _modifyCurrent == event.pos;
         }
         break;
       }
       case EventType.MouseUp: {
         if (_modifyState != _WMModifyState.None) {
           _executeModify(pos, constraints);
+          _modifyState = _WMModifyState.None;
+          _modifyWin = _modifyStart = _modifyCurrent = null;
           break;
         }
         if (_mouseDownReceiver != null) {
           _winOnEvent(_mouseDownReceiver!, event, pos, constraints);
           _mouseDownReceiver = null;
+          break;
         }
         unreachable();
         break;
       }
       default: {}
     }
-    _windows.first.win.onEvent(pos, event);
   }
 }

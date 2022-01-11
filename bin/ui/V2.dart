@@ -8,7 +8,7 @@ class V2 {
   @override
   String toString() => 'V2 ($x, $y)';
 
-  V2 operator+(Object other) {
+  V2 operator +(Object other) {
     // using if instead of switch so we get automatic type promotion
     if (other is V2) {
       return V2(x + other.x, y + other.y);
@@ -21,11 +21,11 @@ class V2 {
     }
   }
   
-  V2 operator-() {
+  V2 operator -() {
     return V2(-x, -y);
   }
 
-  V2 operator-(dynamic other) {
+  V2 operator -(dynamic other) {
     return this + -other;
   }
 
@@ -36,6 +36,16 @@ class V2 {
       return V2(x * other.x, y * other.y);
     } else {
       throw Exception("Can't multiply a V2 by an object of type ${other.runtimeType}.");
+    }
+  }
+
+  V2 operator /(dynamic other) {
+    if (other is int) {
+      return V2(x ~/ other, y ~/ other);
+    } else if (other is V2) {
+      return V2(x ~/ other.x, y ~/ other.y);
+    } else {
+      throw Exception("Can't divide a V2 by an object of type ${other.runtimeType}.");
     }
   }
 
