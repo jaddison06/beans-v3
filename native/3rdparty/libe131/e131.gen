@@ -1,4 +1,4 @@
-@LinkWithLib(ws2_32)
+@PlatformLinkWithLib(Windows, ws2_32)
 
 enum BeansE131ErrorCode {
     success
