@@ -51,7 +51,14 @@ class V2 {
     }
   }
 
-  bool containedBy(V2 pos, V2 size) {
+  bool containedBy(V2 pos, V2 size, {bool inclusive = true}) {
+    if (!inclusive) {
+      return
+        x > pos.x &&
+        y > pos.y &&
+        x < (pos.x + size.x) &&
+        y < (pos.y + size.y);
+    }
     return
       x >= pos.x &&
       y >= pos.y &&

@@ -138,14 +138,26 @@ class UIBase extends Renderable {
   }
 
   bool _isOverlap(V2 aPos, V2 aSize, V2 bPos, V2 bSize) {
-    if (aPos.containedBy(bPos, bSize)) return true;
-    if ((aPos + V2(aSize.x, 0)).containedBy(bPos, bSize)) return true;
-    if ((aPos + V2(0, aSize.y)).containedBy(bPos, bSize)) return true;
-    if ((aPos + aSize).containedBy(bPos, bSize)) return true;
+    if (aPos.containedBy(bPos, bSize, inclusive: false)) return true;
+    if ((aPos + V2(aSize.x, 0)).containedBy(bPos, bSize, inclusive: false)) return true;
+    if ((aPos + V2(0, aSize.y)).containedBy(bPos, bSize, inclusive: false)) return true;
+    if ((aPos + aSize).containedBy(bPos, bSize, inclusive: false)) return true;
     return false;
   }
 
-  
+  // newPos is in px!!!!!
+  bool _hasOverlap(V2 pos, V2 constraints, V2 newPos, _WindowInfo window) {
+    for (var win in _windows) {
+      if (win == window) continue;
+      if (_isOverlap(
+        newPos,
+        window.size * _getBlockSize(constraints),
+        _windowPos(win, pos, constraints),
+        win.size * _getBlockSize(constraints)
+      )) return true;
+    }
+    return false;
+  }
 
   @override
   void render(Display display, V2 pos, V2 constraints) {
@@ -216,23 +228,30 @@ class UIBase extends Renderable {
       //display.ResetClip();
     }
 
+    // options for an overlap:
+    //   - red box, disallow - window stays at original pos (easiest, but unintuitive - feels like we're telling the user off)
+    //   - don't allow move to overlap in the first place (tricky)
+    //   - merge (probs annoying)
+
     if (_modifyState == _WMModifyState.Move) {
         var group = _titlebarAt(pos, constraints, _modifyCurrent!);
         group ??= _windowAt(pos, constraints, _modifyCurrent!);
         if (group == _modifyWin) group = null;
         V2 newPos;
         V2 newSize;
+        var isAllowed = true;
         if (group != null) {
           newPos = _windowPos(group, pos, constraints);
           newSize = group.size * _getBlockSize(constraints);
         } else {
           newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
           newSize = _modifyWin!.size * _getBlockSize(constraints);
+          isAllowed = !_hasOverlap(pos, constraints, newPos, _modifyWin!);
         }
         display.DrawRect(
           newPos,
           newSize,
-          Colour.white
+          isAllowed ? Colour.white : Colour.red
         );
       }
 
