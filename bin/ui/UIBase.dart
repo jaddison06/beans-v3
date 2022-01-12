@@ -138,11 +138,16 @@ class UIBase extends Renderable {
   }
 
   bool _isOverlap(V2 aPos, V2 aSize, V2 bPos, V2 bSize) {
-    if (aPos.containedBy(bPos, bSize, inclusive: false)) return true;
-    if ((aPos + V2(aSize.x, 0)).containedBy(bPos, bSize, inclusive: false)) return true;
-    if ((aPos + V2(0, aSize.y)).containedBy(bPos, bSize, inclusive: false)) return true;
-    if ((aPos + aSize).containedBy(bPos, bSize, inclusive: false)) return true;
-    return false;
+    final aTopRight = aPos + V2(aSize.x, 0);
+    final aBottomLeft = aPos + V2(0, aSize.y);
+    final bTopRight = bPos + V2(bSize.x, 0);
+    final bBottomLeft = bPos + V2(0, bSize.y);
+    return !(
+      aTopRight.x <= bBottomLeft.x ||
+      aBottomLeft.x >= bTopRight.x ||
+      aPos.y >= bBottomLeft.y ||
+      aBottomLeft.y <= bTopRight.y
+    );
   }
 
   // newPos is in px!!!!!
@@ -227,11 +232,6 @@ class UIBase extends Renderable {
       window.win.render(display, contentPos, contentSize, blockSize);
       //display.ResetClip();
     }
-
-    // options for an overlap:
-    //   - red box, disallow - window stays at original pos (easiest, but unintuitive - feels like we're telling the user off)
-    //   - don't allow move to overlap in the first place (tricky)
-    //   - merge (probs annoying)
 
     if (_modifyState == _WMModifyState.Move) {
       var group = _titlebarAt(pos, constraints, _modifyCurrent!);
@@ -392,7 +392,9 @@ class UIBase extends Renderable {
       }
       case EventType.MouseMove: {
         _closeHover = null;
-        if (_modifyState == _WMModifyState.None) {
+        if (_modifyState != _WMModifyState.None) {
+          _modifyCurrent = event.pos;
+        } else {
           if (_mouseDownReceiver != null) {
             _winOnEvent(_mouseDownReceiver!, event, pos, constraints);
             break;
@@ -406,8 +408,6 @@ class UIBase extends Renderable {
           if (win != null) {
             _closeHover = win;
           }
-        } else {
-          _modifyCurrent = event.pos;
         }
         break;
       }
