@@ -234,26 +234,26 @@ class UIBase extends Renderable {
     //   - merge (probs annoying)
 
     if (_modifyState == _WMModifyState.Move) {
-        var group = _titlebarAt(pos, constraints, _modifyCurrent!);
-        group ??= _windowAt(pos, constraints, _modifyCurrent!);
-        if (group == _modifyWin) group = null;
-        V2 newPos;
-        V2 newSize;
-        var isAllowed = true;
-        if (group != null) {
-          newPos = _windowPos(group, pos, constraints);
-          newSize = group.size * _getBlockSize(constraints);
-        } else {
-          newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
-          newSize = _modifyWin!.size * _getBlockSize(constraints);
-          isAllowed = !_hasOverlap(pos, constraints, newPos, _modifyWin!);
-        }
-        display.DrawRect(
-          newPos,
-          newSize,
-          isAllowed ? Colour.white : Colour.red
-        );
+      var group = _titlebarAt(pos, constraints, _modifyCurrent!);
+      group ??= _windowAt(pos, constraints, _modifyCurrent!);
+      if (group == _modifyWin) group = null;
+      V2 newPos;
+      V2 newSize;
+      var isAllowed = true;
+      if (group != null) {
+        newPos = _windowPos(group, pos, constraints);
+        newSize = group.size * _getBlockSize(constraints);
+      } else {
+        newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
+        newSize = _modifyWin!.size * _getBlockSize(constraints);
+        isAllowed = !_hasOverlap(pos, constraints, newPos, _modifyWin!);
       }
+      display.DrawRect(
+        newPos,
+        newSize,
+        isAllowed ? Colour.white : Colour.red
+      );
+    }
 
     final topAreaSize = V2(constraints.x, topAreaHeight);
 
@@ -278,10 +278,34 @@ class UIBase extends Renderable {
   void _executeModify(V2 pos, V2 constraints) {
     switch (_modifyState) {
       case _WMModifyState.Move: {
-
+        var group = _titlebarAt(pos, constraints, _modifyCurrent!);
+        group ??= _windowAt(pos, constraints, _modifyCurrent!);
+        if (group == _modifyWin) group = null;
+        V2 newPos;
+        V2 newSize;
+        var isAllowed = true;
+        if (group != null) {
+          newPos = _windowPos(group, pos, constraints);
+          newSize = group.size * _getBlockSize(constraints);
+        } else {
+          newPos = _windowPos(_modifyWin!, pos, constraints) + (((_modifyCurrent! - _modifyStart!) ~/ (_getBlockSize(constraints))) * _getBlockSize(constraints));
+          newSize = _modifyWin!.size * _getBlockSize(constraints);
+          isAllowed = !_hasOverlap(pos, constraints, newPos, _modifyWin!);
+        }
+        if (isAllowed) {
+          if (group != null) {
+            // todo: create group
+          } else {
+            _modifyWin!.pos = newPos / _getBlockSize(constraints);
+            _modifyWin!.size = newSize / _getBlockSize(constraints);
+          }
+        }
         break;
       }
       case _WMModifyState.Close: {
+        if (_closeButtonAt(pos, constraints, _modifyCurrent!) == _modifyWin) {
+          _windows.remove(_modifyWin);
+        }
         break;
       }
       case _WMModifyState.Resize: {
@@ -389,6 +413,7 @@ class UIBase extends Renderable {
       }
       case EventType.MouseUp: {
         if (_modifyState != _WMModifyState.None) {
+          _modifyCurrent = event.pos;
           _executeModify(pos, constraints);
           _modifyState = _WMModifyState.None;
           _modifyWin = _modifyStart = _modifyCurrent = null;
