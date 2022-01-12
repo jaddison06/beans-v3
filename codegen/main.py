@@ -37,7 +37,7 @@ def main():
     with open(get_config(ConfigField.dart_output_path), 'wt') as fh:
         fh.write(dart    .codegen(parsed_files, release))
     with open(get_config(ConfigField.c_output_path),    'wt') as fh:
-        fh.write(c       .codegen(parsed_files))
+        fh.write(c       .codegen(parsed_files, release))
     with open('Makefile',                               'wt') as fh:
         fh.write(makefile.codegen(parsed_files))
     

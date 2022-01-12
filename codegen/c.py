@@ -12,7 +12,7 @@ def generate_enum(enum: CodegenEnum) -> str:
 
     return out
 
-def codegen(files: list[ParsedGenFile]) -> str:
+def codegen(files: list[ParsedGenFile], release: bool) -> str:
     out = \
 '''#ifndef C_CODEGEN_H
 #define C_CODEGEN_H
@@ -31,6 +31,8 @@ typedef char BEANS_BOOL;
     
     if system() == 'Linux' and 'microsoft' in uname()[3].lower():
         out += '#define BEANS_WSL\n'
+    
+    if release: out += '#define BEANS_RELEASE\n'
     
     out += '\n'
 

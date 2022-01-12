@@ -22,10 +22,16 @@ class BeansEngine {
   static void go() {
     _ui = BeansUI();
 
+    final start = DateTime.now();
+    var frame = 0;
     while (!_quit) {
       _ui.frame();
       dmx.frame();
+      frame++;
     }
+    final end = DateTime.now();
+    final fps = frame * 1000 / end.difference(start).inMilliseconds;
+    print('$frame frames in ${end.difference(start).inSeconds} seconds = $fps fps');
 
     _ui.destroy();
   }
