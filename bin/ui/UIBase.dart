@@ -202,7 +202,7 @@ class UIBase extends Renderable {
       final contentSize = winSize - V2(0, blockSize.y);
       display.FillRect(winPos, winSize, Colour.black);
       display.DrawRect(winPos, winSize, Colour.pink);
-      display.DrawText(Fonts()[null][blockSize.y - 3], window.win.title, winPos + V2(10, 0), Colour.pink);
+      display.DrawText(Fonts.default_, window.win.title, winPos + V2(10, 0), Colour.pink);
 
       final closePos = _closePos(window, pos, constraints);
       final closeCenter = closePos + (_getBlockSize(constraints) / 2);
@@ -262,10 +262,10 @@ class UIBase extends Renderable {
 
     // ---------- TOP ----------
     display.DrawLine(pos + V2(0, topAreaHeight), pos + V2(constraints.x, topAreaHeight), Colour.pink);
-    display.DrawText(Fonts()[null][25], DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
+    display.DrawText(Fonts.default_, DateFormat('HH:mm:ss').format(DateTime.now()), pos + V2(40, 0), Colour.pink);
 
     // ---------- BOTTOM ----------
-    final font = Fonts()[null][20];
+    final font = Fonts.default_;
     final commandLine = BeansEngine.commandLine.toString();
     final error = BeansEngine.commandLine.error;
     final commandLinePos = bottomAreaPos + V2(10, 10);
