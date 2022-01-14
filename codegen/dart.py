@@ -5,7 +5,6 @@ from config import *
 from extensions import *
 from typing import Callable
 from annotations import *
-import yaml
 
 NATIVE: dict[str, str] = {
     'void': 'Void',
@@ -389,84 +388,6 @@ def classes(file: ParsedGenFile) -> str:
 
     return out
 
-def objects() -> str:
-    out = ''
-
-    out += banner('objects')
-    with open(get_config(ConfigField.objects_file), 'rt') as fh:
-        values = yaml.safe_load(fh)
-    
-    out += \
-'''class BeansObject {
-    final String name;
-    final String keyCode;
-    final Map<String, BeansObjectProperty> properties;
-    final Map<String, BeansObjectMethod> methods;
-    const BeansObject(this.name, this.keyCode, this.properties, this.methods);
-}
-
-class BeansObjectProperty {
-    final String name;
-    final bool canGet;
-    final bool canSet;
-    const BeansObjectProperty(this.name, this.canGet, this.canSet);
-}
-
-class BeansObjectMethod {
-    final String name;
-    final bool returnsValue;
-    const BeansObjectMethod(this.name, this.returnsValue);
-}
-
-'''
-    
-    for val_name, val_info in values.items():
-        out += f'const obj_{val_name} = BeansObject(\n'
-        out += f"    '{val_name}',\n"
-        out += f"    '{val_info['key']}',\n"
-        if 'properties' in val_info:
-            out += '    {\n'
-            for prop in val_info['properties']:
-                if isinstance(prop, str): prop_name = prop
-                else: prop_name = list(prop.keys())[0]
-                out += f"        '{prop_name}': BeansObjectProperty("
-                if isinstance(prop, str):
-                    out += f"'{prop_name}', true, true"
-                else:
-                    out += f"'{prop_name}', "
-                    out += 'true' if prop.get('get', True) else 'false'
-                    out += ', '
-                    out += 'true' if prop.get('set', True) else 'false'
-                out += '),\n'
-            out += '    },\n'
-        else:
-            out += '    {},\n'
-
-        if 'methods' in val_info:
-            out += '    {\n'
-            for method in val_info['methods']:
-                if isinstance(method, str): method_name = method
-                else: method_name = list(method.keys())[0]
-                out += f"        '{method_name}': BeansObjectMethod("
-                if isinstance(method, str):
-                    out += f"'{method_name}', false"
-                else:
-                    out += f"'{method_name}', "
-                    out += 'true' if method.get('returnsValue', False) else 'false'
-                out += '),\n'
-            out += '    },\n'
-        else:
-            out += '    {}\n'
-        
-        out += ');\n\n'
-
-    out += 'const objectsByKeyCode = {\n'
-    for val_name, val_info in values.items():
-        out += f"    '{val_info['key']}': obj_{val_name},\n"
-    out += '};\n\n'
-
-    return out
-
 def codegen(files: list[ParsedGenFile], release_: bool) -> str:
     global lookup, release
     lookup = TypeLookup(files)
@@ -489,7 +410,5 @@ import 'package:meta/meta.dart';
         out += funcs(file)
         out += enums(file)
         out += classes(file)
-    
-    out += objects()
 
     return out

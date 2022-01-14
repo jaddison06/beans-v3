@@ -2,11 +2,19 @@ import '../dmx/DmxManager.dart';
 import '../ui/BeansUI.dart';
 import 'CommandLine.dart';
 import '../ui/BeansWindow.dart';
+import '../dart_codegen.dart';
+import 'BeansObject.dart';
 
 class BeansEngine {
   static final dmx = DmxManager();
   static final commandLine = CommandLine();
   static late final BeansUI _ui;
+
+  // made it a getter so it seems sexy and fast when in reality it's a fucking abortion to call every frame
+  static Map<String, BeansObject> get objects {
+    final asList = dmx.channelObjects();
+    return { for (var object in asList) object.keyCode: object };
+  }
 
   // i don't wanna expose _ui directly or anything could happen
   /// Send keyboard events ([EventType.Text] and [EventType.key])to [win]. Keyboard focus is implemented as a stack,
@@ -22,16 +30,10 @@ class BeansEngine {
   static void go() {
     _ui = BeansUI();
 
-    final start = DateTime.now();
-    var frame = 0;
     while (!_quit) {
       _ui.frame();
       dmx.frame();
-      frame++;
     }
-    final end = DateTime.now();
-    final fps = frame * 1000 / end.difference(start).inMilliseconds;
-    print('$frame frames in ${end.difference(start).inSeconds} seconds = $fps fps');
 
     _ui.destroy();
   }

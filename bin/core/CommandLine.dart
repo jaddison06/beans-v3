@@ -1,6 +1,6 @@
 import 'BeansEngine.dart';
+import 'BeansObject.dart';
 import '../dmx/Parameter.dart';
-import '../dart_codegen.dart';
 import 'unreachable.dart';
 
 extension on String {
@@ -46,7 +46,7 @@ class CommandLine {
     } else {
       if (_displayName(command) != null || command.isNumeric) {
         _commands.add(command);
-      } else if (objectsByKeyCode.containsKey(command.toLowerCase())) {
+      } else if (BeansEngine.objects.containsKey(command.toLowerCase())) {
         _commands.add(command.toLowerCase());
       }
     }
@@ -137,8 +137,8 @@ class CommandLine {
       'l': 'level',
       'p': 'pan'
     };
-    if (objectsByKeyCode.containsKey(key)) {
-      return objectsByKeyCode[key]!.name;
+    if (BeansEngine.objects.containsKey(key)) {
+      return BeansEngine.objects[key]!.name;
     } else if (_display.containsKey(key)) {
       return _display[key];
     }
@@ -162,11 +162,11 @@ class CommandLine {
     if (_commands.isEmpty) return;
 
     // check for valid object type
-    if (!objectsByKeyCode.containsKey(_commands.first)) {
+    if (!BeansEngine.objects.containsKey(_commands.first)) {
       _setError(0);
       return;
     }
-    objectType = objectsByKeyCode[_commands.first];
+    objectType = BeansEngine.objects[_commands.first];
 
     // keep the position after the loop has ended
     var i = 0;
@@ -253,8 +253,8 @@ class CommandLine {
 
   /// assumes [objectType] and [selection] are non-null
   bool _selectionValid() {
-    switch (objectType!) {
-      case obj_Channel: {
+    switch (objectType!.name) {
+      case 'Channel': {
         for (var i in selection!) {
           if (!BeansEngine.dmx.channels.containsKey(i)) return false;
         }
@@ -274,8 +274,8 @@ class CommandLine {
 
     Map<String, dynamic>? out;
 
-    switch (objectType!) {
-      case obj_Channel: {
+    switch (objectType!.name) {
+      case 'Channel': {
         for (var i in selection!) {
           final chan = BeansEngine.dmx.channels[i]!;
           for (var prop in properties!.entries) {

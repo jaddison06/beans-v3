@@ -47,5 +47,5 @@ class Fonts {
     return _families[familyName]!;
   }
 
-  static final default_ = Fonts()[null][20];
+  static final default_ = Fonts()[null][22];
 }
