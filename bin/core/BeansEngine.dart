@@ -11,9 +11,10 @@ class BeansEngine {
   static late final BeansUI _ui;
 
   // made it a getter so it seems sexy and fast when in reality it's a fucking abortion to call every frame
-  static Map<String, BeansObject> get objects {
-    final asList = dmx.channelObjects();
-    return { for (var object in asList) object.keyCode: object };
+  static Map<String, Map<int, BeansObject>> get objects {
+    return {
+      'c': dmx.channelObjects()
+    };
   }
 
   // i don't wanna expose _ui directly or anything could happen

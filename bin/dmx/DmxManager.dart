@@ -50,10 +50,10 @@ class DmxManager {
     return addresses;
   }
 
-  List<BeansObject> channelObjects() {
-    final out = <BeansObject>[];
+  Map<int, BeansObject> channelObjects() {
+    final out = <int, BeansObject>{};
     for (var entry in channels.entries) {
-      out.add(BeansObject(
+      out[entry.key] = (BeansObject(
         'Channel',
         'c',
         { for (var param in entry.value.fixture.params) param.param.name: BeansObjectProperty(

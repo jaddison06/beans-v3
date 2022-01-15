@@ -14,7 +14,7 @@ class ConfigField(Enum):
     python = auto()
     gcc = auto()
     cloc = auto()
-    objects_file = auto()
+    dataclasses_file = auto()
 
 DEFAULTS = {
     ConfigField.definition_ext: '.gen',
@@ -26,7 +26,7 @@ DEFAULTS = {
     ConfigField.python: 'python',
     ConfigField.gcc: 'gcc',
     ConfigField.cloc: 'cloc',
-    ConfigField.objects_file: 'objects.yaml'
+    ConfigField.dataclasses_file: 'dataclasses.yaml'
 }
 
 CONFIG_FNAME = 'codegen.yaml'

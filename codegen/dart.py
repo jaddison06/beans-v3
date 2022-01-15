@@ -5,6 +5,7 @@ from config import *
 from extensions import *
 from typing import Callable
 from annotations import *
+import yaml
 
 NATIVE: dict[str, str] = {
     'void': 'Void',
@@ -383,10 +384,36 @@ def classes(file: ParsedGenFile) -> str:
         
         out += '}\n\n'
 
-
-
-
     return out
+
+def dataclasses() -> str:
+    with open(get_config(ConfigField.dataclasses_file), 'rt') as fh:
+        values = yaml.safe_load(fh)
+    
+    out = ''
+    out += banner('dataclasses')
+
+    for class_name, members in values.items():
+        out += f'class {class_name} {{\n'
+        for name, type_ in members.items():
+            if name == 'toString': continue
+            out += f'    final {type_} {name};\n'
+        out += f'    const {class_name}('
+        for name in members.keys():
+            if name == 'toString': continue
+            out += f'this.{name}, '
+        
+        out = out[:-2]
+        out += ');\n'
+
+        if 'toString' in members:
+            out += "\n    @override\n    String toString() => '"
+            out += members['toString']
+            out += "';\n"
+
+        out += '}\n\n'
+
+        return out
 
 def codegen(files: list[ParsedGenFile], release_: bool) -> str:
     global lookup, release
@@ -410,5 +437,7 @@ import 'package:meta/meta.dart';
         out += funcs(file)
         out += enums(file)
         out += classes(file)
+    
+    out += dataclasses()
 
     return out

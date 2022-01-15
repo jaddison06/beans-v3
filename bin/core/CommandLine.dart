@@ -138,7 +138,7 @@ class CommandLine {
       'p': 'pan'
     };
     if (BeansEngine.objects.containsKey(key)) {
-      return BeansEngine.objects[key]!.name;
+      return BeansEngine.objects[key]!.values.first.name;
     } else if (_display.containsKey(key)) {
       return _display[key];
     }
