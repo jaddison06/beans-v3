@@ -1,7 +1,36 @@
 import 'BeansEngine.dart';
-import 'BeansObject.dart';
 import '../dmx/Parameter.dart';
 import 'unreachable.dart';
+import '../dart_codegen.dart';
+
+extension on BeansObject {
+  BeansObject combine(BeansObject other) {
+    final properties = Map.of(this.properties);
+    final methods = Map.of(this.methods);
+    for (var property in other.properties.entries) {
+      if (!properties.containsKey(property.key)) {
+        properties[property.key] = property.value;
+      } else {
+        final current = properties[property.key]!;
+        properties[property.key] = current.copyWith(
+          canGet: false,
+          canSet: current.canSet || property.value.canSet
+        );
+      }
+    }
+    for (var method in other.methods.entries) {
+      methods[method.key] = method.value.copyWith(
+        returnsValue: false
+      );
+    }
+    return BeansObject(
+      name,
+      keyCode,
+      properties,
+      methods
+    );
+  }
+}
 
 extension on String {
   bool get isNumeric =>
@@ -25,7 +54,7 @@ class CommandLine {
   //   - selection is non-null
   // this is all that's guaranteed, as a selection is a valid command
 
-  BeansObject? objectType;
+  List<BeansObject>? objectTypes;
   List<int>? selection;
   BeansObjectMethod? method;
   // see specialValues in _parse()

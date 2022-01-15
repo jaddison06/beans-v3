@@ -2,7 +2,7 @@ import 'DmxInterface.dart';
 import 'SacnInterface.dart';
 import 'Channel.dart';
 import 'package:collection/collection.dart';
-import '../core/BeansObject.dart';
+import '../dart_codegen.dart';
 
 import 'FixtureInfo.dart';
 import 'Parameter.dart';

@@ -3,7 +3,6 @@ import '../ui/BeansUI.dart';
 import 'CommandLine.dart';
 import '../ui/BeansWindow.dart';
 import '../dart_codegen.dart';
-import 'BeansObject.dart';
 
 class BeansEngine {
   static final dmx = DmxManager();
