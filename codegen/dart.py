@@ -404,16 +404,28 @@ def dataclasses() -> str:
             out += f'this.{name}, '
         
         out = out[:-2]
-        out += ');\n'
+        out += ');\n\n'
+
+        out += f'    {class_name} copyWith({{'
+        for name, type_ in members.items():
+            if name == 'toString': continue
+            out += f'{type_}? {name}, '
+        out = out[:-2]
+        out += f'}}) => {class_name}(\n'
+        for name in members.keys():
+            if name == 'toString': continue
+            out += f'        {name} ?? this.{name},\n'
+        out = out[:-2]
+        out += '\n    );\n\n'
 
         if 'toString' in members:
-            out += "\n    @override\n    String toString() => '"
+            out += "    @override\n    String toString() => '"
             out += members['toString']
             out += "';\n"
 
         out += '}\n\n'
 
-        return out
+    return out
 
 def codegen(files: list[ParsedGenFile], release_: bool) -> str:
     global lookup, release

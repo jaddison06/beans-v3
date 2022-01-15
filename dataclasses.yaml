@@ -1,0 +1,20 @@
+BeansObject:
+  name: String
+  keyCode: String
+  properties: Map<String, BeansObjectProperty>
+  methods: Map<String, BeansObjectMethod>
+
+  toString: "(BeansObject $keyCode) $name: {properties: $properties, methods: $methods}"
+
+BeansObjectProperty:
+  name: String
+  canGet: bool
+  canSet: bool
+
+  toString: "(BeansObjectProperty) $name: {canGet: $canGet, canSet: $canSet}"
+
+BeansObjectMethod:
+  name: String
+  returnsValue: bool
+
+  toString: "(BeansObjectMethod) $name: {returnsValue: $returnsValue}"
